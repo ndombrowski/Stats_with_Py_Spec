@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.1.251">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Understanding and Visualizing Data with Python - 10&nbsp; Univariate data analyses - NHANES case study</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../code/10_nhanes_univariate_practice.html" rel="next">
+<link href="../code/8_Tables_Histograms_and_Boxplots_in_Python.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+</head>
+
+<body class="nav-sidebar floating">
+
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Univariate data analyses - NHANES case study</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Understanding and Visualizing Data with Python</a> 
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">index.html</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/1_intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Lecture notes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/2_introduction_jupyter.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">What is Jupyter Notebooks?</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/3_data_types.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Data Types in Python</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/4_libraries_data_management.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Python Libraries</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/5_nhanes_data_basics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Using Python to read data files and explore their contents</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/6_week1_python_resources.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Python Resources</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/7_python_libraries.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Python Libraries</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/8_Tables_Histograms_and_Boxplots_in_Python.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Visualizing Data in Python</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/9_nhanes_univariate_analyses.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Univariate data analyses - NHANES case study</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/10_nhanes_univariate_practice.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Practice notebook for univariate analysis using NHANES data</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#frequency-tables" id="toc-frequency-tables" class="nav-link active" data-scroll-target="#frequency-tables"><span class="toc-section-number">10.0.1</span>  Frequency tables</a></li>
+  <li><a href="#numerical-summaries" id="toc-numerical-summaries" class="nav-link" data-scroll-target="#numerical-summaries"><span class="toc-section-number">10.0.2</span>  Numerical summaries</a></li>
+  <li><a href="#graphical-summaries" id="toc-graphical-summaries" class="nav-link" data-scroll-target="#graphical-summaries"><span class="toc-section-number">10.0.3</span>  Graphical summaries</a></li>
+  <li><a href="#stratification" id="toc-stratification" class="nav-link" data-scroll-target="#stratification"><span class="toc-section-number">10.0.4</span>  Stratification</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Univariate data analyses - NHANES case study</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<p>Here we will demonstrate how to use Python and <a href="https://pandas.pydata.org/">Pandas</a> to perform some basic analyses with univariate data, using the 2015-2016 wave of the <a href="https://www.cdc.gov/nchs/nhanes/index.htm">NHANES</a> study to illustrate the techniques.</p>
+<p>The following import statements make the libraries that we will need available. Note that in a Jupyter notebook, you should generally use the <code>%matplotlib inline</code> directive, which would not be used when running a script outside of the Jupyter environment.</p>
+<div class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>matplotlib inline</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Next we will load the NHANES data from a file.</p>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>da <span class="op">=</span> pd.read_csv(<span class="st">"../data/nhanes_2015_2016.csv"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>da.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="2">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>SEQN</th>
+      <th>ALQ101</th>
+      <th>ALQ110</th>
+      <th>ALQ130</th>
+      <th>SMQ020</th>
+      <th>RIAGENDR</th>
+      <th>RIDAGEYR</th>
+      <th>RIDRETH1</th>
+      <th>DMDCITZN</th>
+      <th>DMDEDUC2</th>
+      <th>...</th>
+      <th>BPXSY2</th>
+      <th>BPXDI2</th>
+      <th>BMXWT</th>
+      <th>BMXHT</th>
+      <th>BMXBMI</th>
+      <th>BMXLEG</th>
+      <th>BMXARML</th>
+      <th>BMXARMC</th>
+      <th>BMXWAIST</th>
+      <th>HIQ210</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>83732</td>
+      <td>1.0</td>
+      <td>NaN</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>62</td>
+      <td>3</td>
+      <td>1.0</td>
+      <td>5.0</td>
+      <td>...</td>
+      <td>124.0</td>
+      <td>64.0</td>
+      <td>94.8</td>
+      <td>184.5</td>
+      <td>27.8</td>
+      <td>43.3</td>
+      <td>43.6</td>
+      <td>35.9</td>
+      <td>101.1</td>
+      <td>2.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>83733</td>
+      <td>1.0</td>
+      <td>NaN</td>
+      <td>6.0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>53</td>
+      <td>3</td>
+      <td>2.0</td>
+      <td>3.0</td>
+      <td>...</td>
+      <td>140.0</td>
+      <td>88.0</td>
+      <td>90.4</td>
+      <td>171.4</td>
+      <td>30.8</td>
+      <td>38.0</td>
+      <td>40.0</td>
+      <td>33.2</td>
+      <td>107.9</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>83734</td>
+      <td>1.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1</td>
+      <td>1</td>
+      <td>78</td>
+      <td>3</td>
+      <td>1.0</td>
+      <td>3.0</td>
+      <td>...</td>
+      <td>132.0</td>
+      <td>44.0</td>
+      <td>83.4</td>
+      <td>170.1</td>
+      <td>28.8</td>
+      <td>35.6</td>
+      <td>37.0</td>
+      <td>31.0</td>
+      <td>116.5</td>
+      <td>2.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>83735</td>
+      <td>2.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>2</td>
+      <td>56</td>
+      <td>3</td>
+      <td>1.0</td>
+      <td>5.0</td>
+      <td>...</td>
+      <td>134.0</td>
+      <td>68.0</td>
+      <td>109.8</td>
+      <td>160.9</td>
+      <td>42.4</td>
+      <td>38.5</td>
+      <td>37.7</td>
+      <td>38.3</td>
+      <td>110.1</td>
+      <td>2.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>83736</td>
+      <td>2.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>2</td>
+      <td>42</td>
+      <td>4</td>
+      <td>1.0</td>
+      <td>4.0</td>
+      <td>...</td>
+      <td>114.0</td>
+      <td>54.0</td>
+      <td>55.2</td>
+      <td>164.9</td>
+      <td>20.3</td>
+      <td>37.4</td>
+      <td>36.0</td>
+      <td>27.2</td>
+      <td>80.4</td>
+      <td>2.0</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 28 columns</p>
+</div>
+</div>
+</div>
+<section id="frequency-tables" class="level3" data-number="10.0.1">
+<h3 data-number="10.0.1" class="anchored" data-anchor-id="frequency-tables"><span class="header-section-number">10.0.1</span> Frequency tables</h3>
+<p>The <a href="https://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.value_counts.html">value_counts</a> method can be used to determine the number of times that each distinct value of a variable occurs in a data set. In statistical terms, this is the “frequency distribution” of the variable. Below we show the frequency distribution of the <a href="https://wwwn.cdc.gov/Nchs/Nhanes/2015-2016/DEMO_I.htm#DMDEDUC2">DMDEDUC2</a> variable, which is a variable that reflects a person’s level of educational attainment. The <code>value_counts</code> method produces a table with two columns. The first column contains all distinct observed values for the variable. The second column contains the number of times each of these values occurs. Note that the table returned by <code>value_counts</code> is actually a Pandas data frame, so can be further processed using any Pandas methods for working with data frames.</p>
+<p>The numbers 1, 2, 3, 4, 5, 9 seen below are integer codes for the 6 possible non-missing values of the DMDEDUC2 variable. The meaning of these codes is given in the NHANES codebook located <a href="https://wwwn.cdc.gov/Nchs/Nhanes/2015-2016/DEMO_I.htm#DMDEDUC2">here</a>, and will be discussed further below. This table shows, for example, that 1621 people in the data file have DMDEDUC=4, which indicates that the person has completed some college, but has not graduated with a four-year degree.</p>
+<div class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>da.DMDEDUC2.value_counts()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<pre><code>4.0    1621
+5.0    1366
+3.0    1186
+1.0     655
+2.0     643
+9.0       3
+Name: DMDEDUC2, dtype: int64</code></pre>
+</div>
+</div>
+<p>Note that <strong>the <code>value_counts</code> method excludes missing values</strong>. We confirm this below by adding up the number of observations with a DMDEDUC2 value equal to 1, 2, 3, 4, 5, or 9 (there are 5474 such rows), and comparing this to the total number of rows in the data set, which is 5735. This tells us that there are 5735 - 5474 = 261 missing values for this variable (other variables may have different numbers of missing values).</p>
+<div class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(da.DMDEDUC2.value_counts().<span class="bu">sum</span>())</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="dv">1621</span> <span class="op">+</span> <span class="dv">1366</span> <span class="op">+</span> <span class="dv">1186</span> <span class="op">+</span> <span class="dv">655</span> <span class="op">+</span> <span class="dv">643</span> <span class="op">+</span> <span class="dv">3</span>) <span class="co"># Manually sum the frequencies</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(da.shape)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>5474
+5474
+(5735, 28)</code></pre>
+</div>
+</div>
+<p>Another way to obtain this result is to locate all the null (missing) values in the data set using the <a href="https://pandas.pydata.org/pandas-docs/stable/generated/pandas.isnull.html">isnull</a> Pandas function, and count the number of such locations.</p>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>pd.isnull(da.DMDEDUC2).<span class="bu">sum</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<pre><code>261</code></pre>
+</div>
+</div>
+<section id="replace-naming-in-a-column" class="level4" data-number="10.0.1.1">
+<h4 data-number="10.0.1.1" class="anchored" data-anchor-id="replace-naming-in-a-column"><span class="header-section-number">10.0.1.1</span> Replace naming in a column</h4>
+<p>In some cases it is useful to <a href="https://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.replace.html">replace</a> integer codes with a text label that reflects the code’s meaning. Below we create a new variable called ‘DMDEDUC2x’ that is recoded with text labels, then we generate its frequency distribution.</p>
+<div class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>da[<span class="st">"DMDEDUC2x"</span>] <span class="op">=</span> da.DMDEDUC2.replace({<span class="dv">1</span>: <span class="st">"&lt;9"</span>, <span class="dv">2</span>: <span class="st">"9-11"</span>, <span class="dv">3</span>: <span class="st">"HS/GED"</span>, <span class="dv">4</span>: <span class="st">"Some college/AA"</span>, <span class="dv">5</span>: <span class="st">"College"</span>, </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>                                       <span class="dv">7</span>: <span class="st">"Refused"</span>, <span class="dv">9</span>: <span class="st">"Don't know"</span>})</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>da.DMDEDUC2x.value_counts()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<pre><code>Some college/AA    1621
+College            1366
+HS/GED             1186
+&lt;9                  655
+9-11                643
+Don't know            3
+Name: DMDEDUC2x, dtype: int64</code></pre>
+</div>
+</div>
+<p>We will also want to have a relabeled version of the gender variable, so we will construct that now as well. We will follow a convention here of appending an ‘x’ to the end of a categorical variable’s name when it has been recoded from numeric to string (text) values.</p>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>da[<span class="st">"RIAGENDRx"</span>] <span class="op">=</span> da.RIAGENDR.replace({<span class="dv">1</span>: <span class="st">"Male"</span>, <span class="dv">2</span>: <span class="st">"Female"</span>})</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>da[<span class="st">"RIAGENDRx"</span>].value_counts()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<pre><code>Female    2976
+Male      2759
+Name: RIAGENDRx, dtype: int64</code></pre>
+</div>
+</div>
+<p>For many purposes it is more relevant to consider the proportion of the sample with each of the possible category values, rather than the number of people in each category. We can do this as follows:</p>
+<div class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> da.DMDEDUC2x.value_counts()  <span class="co"># x is just a name to hold this value temporarily</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>x <span class="op">/</span> x.<span class="bu">sum</span>() <span class="op">*</span> <span class="dv">100</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="12">
+<pre><code>Some college/AA    29.612715
+College            24.954330
+HS/GED             21.666058
+&lt;9                 11.965656
+9-11               11.746438
+Don't know          0.054805
+Name: DMDEDUC2x, dtype: float64</code></pre>
+</div>
+</div>
+</section>
+<section id="replace-nas-with-another-category" class="level4" data-number="10.0.1.2">
+<h4 data-number="10.0.1.2" class="anchored" data-anchor-id="replace-nas-with-another-category"><span class="header-section-number">10.0.1.2</span> Replace NAs with another category</h4>
+<p>In some cases we will want to treat the missing response category as another category of observed response, rather than ignoring it when creating summaries. Below we create a new category called “Missing”, and assign all missing values to it usig <a href="https://pandas.pydata.org/pandas-docs/stable/missing_data.html#filling-missing-values-fillna">fillna</a>. Then we recalculate the frequency distribution. We see that 4.6% of the responses are missing.</p>
+<div class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>da[<span class="st">"DMDEDUC2x"</span>] <span class="op">=</span> da.DMDEDUC2x.fillna(<span class="st">"Missing"</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> da.DMDEDUC2x.value_counts()</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>x <span class="op">/</span> x.<span class="bu">sum</span>() <span class="op">*</span> <span class="dv">100</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<pre><code>Some college/AA    28.265039
+College            23.818657
+HS/GED             20.680035
+&lt;9                 11.421099
+9-11               11.211857
+Missing             4.551003
+Don't know          0.052310
+Name: DMDEDUC2x, dtype: float64</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="numerical-summaries" class="level3" data-number="10.0.2">
+<h3 data-number="10.0.2" class="anchored" data-anchor-id="numerical-summaries"><span class="header-section-number">10.0.2</span> Numerical summaries</h3>
+<p>A quick way to get a set of numerical summaries for a quantitative variable is with the <a href="https://pandas.pydata.org/pandas-docs/stable/basics.html#summarizing-data-describe">describe</a> data frame method. Below we demonstrate how to do this using the body weight variable (<a href="https://wwwn.cdc.gov/Nchs/Nhanes/2015-2016/BMX_I.htm#BMXWT">BMXWT</a>). As with many surveys, some data values are missing, so we explicitly drop the missing cases using the <a href="https://pandas.pydata.org/pandas-docs/stable/missing_data.html#dropping-axis-labels-with-missing-data-dropna">dropna</a> method before generating the summaries.</p>
+<div class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>da.BMXWT.dropna().describe()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<pre><code>count    5666.000000
+mean       81.342676
+std        21.764409
+min        32.400000
+25%        65.900000
+50%        78.200000
+75%        92.700000
+max       198.900000
+Name: BMXWT, dtype: float64</code></pre>
+</div>
+</div>
+<p>It’s also possible to calculate individual summary statistics from one column of a data set. This can be done using Pandas methods, or with numpy functions:</p>
+<div class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> da.BMXWT.dropna()  <span class="co"># Extract all non-missing values of BMXWT into a variable called 'x'</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(x.mean()) <span class="co"># Pandas method</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.mean(x)) <span class="co"># Numpy function</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(x.median())</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.percentile(x, <span class="dv">50</span>))  <span class="co"># 50th percentile, same as the median</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.percentile(x, <span class="dv">75</span>))  <span class="co"># 75th percentile</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(x.quantile(<span class="fl">0.75</span>)) <span class="co"># Pandas method for quantiles, equivalent to 75th percentile</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>81.34267560889516
+81.34267560889516
+78.2
+78.2
+92.7
+92.7</code></pre>
+</div>
+</div>
+<p>Next we look at frequencies for a systolic blood pressure measurement (<a href="https://wwwn.cdc.gov/Nchs/Nhanes/2015-2016/BPX_I.htm#BPXSY1">BPXSY1</a>). “BPX” here is the NHANES prefix for blood pressure measurements, “SY” stands for “systolic” blood pressure (blood pressure at the peak of a heartbeat cycle), and “1” indicates that this is the first of three systolic blood presure measurements taken on a subject.</p>
+<p>A person is generally considered to have pre-hypertension when their systolic blood pressure is between 120 and 139, or their diastolic blood pressure is between 80 and 89. Considering only the systolic condition, we can calculate the proprotion of the NHANES sample who would be considered to have pre-hypertension.</p>
+<div class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>np.mean((da.BPXSY1 <span class="op">&gt;=</span> <span class="dv">120</span>) <span class="op">&amp;</span> (da.BPXSY2 <span class="op">&lt;=</span> <span class="dv">139</span>))  <span class="co"># "&amp;" means "and"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="12">
+<pre><code>0.3741935483870968</code></pre>
+</div>
+</div>
+<p>Next we calculate the propotion of NHANES subjects who are pre-hypertensive based on diastolic blood pressure.</p>
+<div class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>np.mean((da.BPXDI1 <span class="op">&gt;=</span> <span class="dv">80</span>) <span class="op">&amp;</span> (da.BPXDI2 <span class="op">&lt;=</span> <span class="dv">89</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<pre><code>0.14803836094158676</code></pre>
+</div>
+</div>
+<p>Finally we calculate the proportion of NHANES subjects who are pre-hypertensive based on either systolic or diastolic blood pressure. Since some people are pre-hypertensive under both criteria, the proportion below is less than the sum of the two proportions calculated above.</p>
+<p>Since the combined systolic and diastolic condition for pre-hypertension is somewhat complex, below we construct temporary variables ‘a’ and ‘b’ that hold the systolic and diastolic pre-hypertensive status separately, then combine them with a “logical or” to obtain the final status for each subject.</p>
+<div class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> (da.BPXSY1 <span class="op">&gt;=</span> <span class="dv">120</span>) <span class="op">&amp;</span> (da.BPXSY2 <span class="op">&lt;=</span> <span class="dv">139</span>)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> (da.BPXDI1 <span class="op">&gt;=</span> <span class="dv">80</span>) <span class="op">&amp;</span> (da.BPXDI2 <span class="op">&lt;=</span> <span class="dv">89</span>)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.mean(a <span class="op">|</span> b))  <span class="co"># "|" means "or"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0.43975588491717527</code></pre>
+</div>
+</div>
+<p>Blood pressure measurements are affected by a phenomenon called “white coat anxiety”, in which a subject’s bood pressure may be slightly elevated if they are nervous when interacting with health care providers. Typically this effect subsides if the blood pressure is measured several times in sequence. In NHANES, both systolic and diastolic blood pressure are meausred three times for each subject (e.g.&nbsp;<a href="https://wwwn.cdc.gov/Nchs/Nhanes/2015-2016/BPX_I.htm#BPXSY2">BPXSY2</a> is the second measurement of systolic blood pressure). We can calculate the extent to which white coat anxiety is present in the NHANES data by looking a the mean difference between the first two systolic or diastolic blood pressure measurements.</p>
+<div class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.mean(da.BPXSY1 <span class="op">-</span> da.BPXSY2))</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.mean(da.BPXDI1 <span class="op">-</span> da.BPXDI2))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0.6749860309182343
+0.3490407897187558</code></pre>
+</div>
+</div>
+</section>
+<section id="graphical-summaries" class="level3" data-number="10.0.3">
+<h3 data-number="10.0.3" class="anchored" data-anchor-id="graphical-summaries"><span class="header-section-number">10.0.3</span> Graphical summaries</h3>
+<p>Quantitative variables can be effectively summarized graphically. Below we see the distribution of body weight (in Kg), shown as a histogram. It is evidently right-skewed.</p>
+<div class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>sns.histplot(da.BMXWT.dropna())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="18">
+<pre><code>&lt;AxesSubplot:xlabel='BMXWT', ylabel='Count'&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="9_nhanes_univariate_analyses_files/figure-html/cell-17-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Next we look at the histogram of systolic blood pressure measurements. You can see that there is a tendency for the measurements to be rounded to the nearest 5 or 10 units.</p>
+<div class="cell" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>sns.histplot(da.BPXSY1.dropna())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="20">
+<pre><code>&lt;AxesSubplot:xlabel='BPXSY1', ylabel='Count'&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="9_nhanes_univariate_analyses_files/figure-html/cell-18-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<p>To compare several distributions, we can use side-by-side boxplots. Below we compare the distributions of the first and second systolic blood pressure measurements (BPXSY1, BPXSY2), and the first and second diastolic blood pressure measurements (<a href="https://wwwn.cdc.gov/Nchs/Nhanes/2015-2016/BPX_I.htm#BPXDI1">BPXDI1</a>, BPXDI2). As expected, diastolic measurements are substantially lower than systolic measurements. Above we saw that the second blood pressure reading on a subject tended on average to be slightly lower than the first measurement. This difference was less than 1 mm/Hg, so is not visible in the “marginal” distributions shown below.</p>
+<div class="cell" data-execution_count="24">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>bp <span class="op">=</span> sns.boxplot(data<span class="op">=</span>da[[<span class="st">"BPXSY1"</span>, <span class="st">"BPXSY2"</span>, <span class="st">"BPXDI1"</span>, <span class="st">"BPXDI2"</span>]])</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>_ <span class="op">=</span> bp.set_ylabel(<span class="st">"Blood pressure in mm/Hg"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="9_nhanes_univariate_analyses_files/figure-html/cell-19-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="stratification" class="level3" data-number="10.0.4">
+<h3 data-number="10.0.4" class="anchored" data-anchor-id="stratification"><span class="header-section-number">10.0.4</span> Stratification</h3>
+<p>One of the most effective ways to get more information out of a dataset is to divide it into smaller, more uniform subsets, and analyze each of these “strata” on its own. We can then formally or informally compare the findings in the different strata. When working with human subjects, it is very common to stratify on demographic factors such as age, sex, and race.</p>
+<p>To illustrate this technique, consider blood pressure, which is a value that tends to increase with age. To see this trend in the NHANES data, we can <a href="https://pandas.pydata.org/pandas-docs/stable/generated/pandas.cut.html">partition</a> the data into age strata, and construct side-by-side boxplots of the systolic blood pressure (SBP) distribution within each stratum. Since age is a quantitative variable, we need to create a series of “bins” of similar SBP values in order to stratify the data. Each box in the figure below is a summary of univariate data within a specific population stratum (here defined by age).</p>
+<div class="cell" data-execution_count="25">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>da.RIDAGEYR.value_counts()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="25">
+<pre><code>80    343
+18    133
+19    128
+60    119
+61    112
+     ... 
+74     52
+78     47
+76     44
+77     43
+79     35
+Name: RIDAGEYR, Length: 63, dtype: int64</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>da[<span class="st">"agegrp"</span>] <span class="op">=</span> pd.cut(da.RIDAGEYR, [<span class="dv">18</span>, <span class="dv">30</span>, <span class="dv">40</span>, <span class="dv">50</span>, <span class="dv">60</span>, <span class="dv">70</span>, <span class="dv">80</span>]) <span class="co"># Create age strata based on these cut points</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">5</span>))  <span class="co"># Make the figure wider than default (12cm wide by 5cm tall)</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>sns.boxplot(x<span class="op">=</span><span class="st">"agegrp"</span>, y<span class="op">=</span><span class="st">"BPXSY1"</span>, data<span class="op">=</span>da)  <span class="co"># Make boxplot of BPXSY1 stratified by age group</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="19">
+<pre><code>&lt;matplotlib.axes._subplots.AxesSubplot at 0x7f8388799ef0&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="9_nhanes_univariate_analyses_files/figure-html/cell-21-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Taking this a step further, it is also the case that blood pressure tends to differ between women and men. While we could simply make two side-by-side boxplots to illustrate this contrast, it would be a bit odd to ignore age after already having established that it is strongly associated with blood pressure. Therefore, we will doubly stratify the data by gender and age.</p>
+<p>We see from the figure below that within each gender, older people tend to have higher blood pressure than younger people. However within an age band, the relationship between gender and systolic blood pressure is somewhat complex – in younger people, men have substantially higher blood pressures than women of the same age. However for people older than 50, this relationship becomes much weaker, and among people older than 70 it appears to reverse. It is also notable that the variation of these distributions, reflected in the height of each box in the boxplot, increases with age.</p>
+<div class="cell" data-execution_count="26">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>da[<span class="st">"agegrp"</span>] <span class="op">=</span> pd.cut(da.RIDAGEYR, [<span class="dv">18</span>, <span class="dv">30</span>, <span class="dv">40</span>, <span class="dv">50</span>, <span class="dv">60</span>, <span class="dv">70</span>, <span class="dv">80</span>])</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">5</span>))</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>sns.boxplot(x<span class="op">=</span><span class="st">"agegrp"</span>, y<span class="op">=</span><span class="st">"BPXSY1"</span>, hue<span class="op">=</span><span class="st">"RIAGENDRx"</span>, data <span class="op">=</span> da)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="26">
+<pre><code>&lt;AxesSubplot:xlabel='agegrp', ylabel='BPXSY1'&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="9_nhanes_univariate_analyses_files/figure-html/cell-22-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<p>When stratifying on two factors (here age and gender), we can group the boxes first by age, and within age bands by gender, as above, or we can do the opposite – group first by gender, and then within gender group by age bands. Each approach highlights a different aspect of the data.</p>
+<div class="cell" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>da[<span class="st">"agegrp"</span>] <span class="op">=</span> pd.cut(da.RIDAGEYR, [<span class="dv">18</span>, <span class="dv">30</span>, <span class="dv">40</span>, <span class="dv">50</span>, <span class="dv">60</span>, <span class="dv">70</span>, <span class="dv">80</span>])</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">5</span>))</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>sns.boxplot(x<span class="op">=</span><span class="st">"RIAGENDRx"</span>, y<span class="op">=</span><span class="st">"BPXSY1"</span>, hue<span class="op">=</span><span class="st">"agegrp"</span>, data<span class="op">=</span>da)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="21">
+<pre><code>&lt;matplotlib.axes._subplots.AxesSubplot at 0x7f838880ed68&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="9_nhanes_univariate_analyses_files/figure-html/cell-23-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Stratification can also be useful when working with categorical variables. Below we look at the frequency distribution of educational attainment (“DMDEDUC2”) within 10-year age bands. While “some college” is the most common response in all age bands, up to around age 60 the second most common response is “college” (i.e.&nbsp;the person graduated from college with a four-year degree). However for people over 50, there are as many or more people with only high school or general equivalency diplomas (HS/GED) than there are college graduates.</p>
+<p><strong>Note on causality and confounding:</strong> An important role of statistics is to aid researchers in identifying causes underlying observed differences. Here we have seen differences in both blood pressure and educational attainment based on age. It is plausible that aging directly causes blood pressure to increase. But in the case of educational attainment, this is actually a “birth cohort effect”. NHANES is a cross sectional survey (all data for one wave were collected at a single point in time). People who were, say, 65 in 2015 (when these data were collected), were college-aged around 1970, while people who were in their 20’s in 2015 were college-aged in around 2010 or later. Over the last few decades, it has become much more common for people to at least begin a college degree than it was in the past. Therefore, younger people as a group have higher educational attainment than older people as a group. As these young people grow older, the cross sectional relationship between age and educational attainment will change.</p>
+<div class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>da.groupby(<span class="st">"agegrp"</span>)[<span class="st">"DMDEDUC2x"</span>].value_counts()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="22">
+<pre><code>agegrp    DMDEDUC2x      
+(18, 30]  Some college/AA    364
+          College            278
+          HS/GED             237
+          Missing            128
+          9-11                99
+          &lt;9                  47
+(30, 40]  Some college/AA    282
+          College            264
+          HS/GED             182
+          9-11               111
+          &lt;9                  93
+(40, 50]  Some college/AA    262
+          College            260
+          HS/GED             171
+          9-11               112
+          &lt;9                  98
+(50, 60]  Some college/AA    258
+          College            220
+          HS/GED             220
+          9-11               122
+          &lt;9                 104
+(60, 70]  Some college/AA    238
+          HS/GED             192
+          College            188
+          &lt;9                 149
+          9-11               111
+(70, 80]  Some college/AA    217
+          HS/GED             184
+          &lt;9                 164
+          College            156
+          9-11                88
+          Don't know           3
+Name: DMDEDUC2x, dtype: int64</code></pre>
+</div>
+</div>
+<p>We can also stratify jointly by age and gender to explore how educational attainment varies by both of these factors simultaneously. In doing this, it is easier to interpret the results if we <a href="https://pandas.pydata.org/pandas-docs/stable/reshaping.html#reshaping-by-stacking-and-unstacking">pivot</a> the education levels into the columns, and normalize the counts so that they sum to 1. After doing this, the results can be interpreted as proportions or probabilities. One notable observation from this table is that for people up to age around 60, women are more likely to have graduated from college than men, but for people over aged 60, this relationship reverses.</p>
+<div class="cell" data-execution_count="27">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Eliminate rare/missing values</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>dx <span class="op">=</span> da.loc[<span class="op">~</span>da.DMDEDUC2x.isin([<span class="st">"Don't know"</span>, <span class="st">"Missing"</span>]), :]  </span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a><span class="co">#group data</span></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>dx <span class="op">=</span> dx.groupby([<span class="st">"agegrp"</span>, <span class="st">"RIAGENDRx"</span>])[<span class="st">"DMDEDUC2x"</span>]</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>dx <span class="op">=</span> dx.value_counts()</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>dx.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="27">
+<pre><code>agegrp    RIAGENDRx  DMDEDUC2x      
+(18, 30]  Female     Some college/AA    207
+                     College            156
+                     HS/GED             119
+                     9-11                44
+                     &lt;9                  27
+Name: DMDEDUC2x, dtype: int64</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="28">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>dx <span class="op">=</span> dx.unstack() <span class="co"># Restructure the results from 'long' to 'wide'</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>dx.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="28">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>DMDEDUC2x</th>
+      <th>9-11</th>
+      <th>&lt;9</th>
+      <th>College</th>
+      <th>HS/GED</th>
+      <th>Some college/AA</th>
+    </tr>
+    <tr>
+      <th>agegrp</th>
+      <th>RIAGENDRx</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="2" valign="top">(18, 30]</th>
+      <th>Female</th>
+      <td>44</td>
+      <td>27</td>
+      <td>156</td>
+      <td>119</td>
+      <td>207</td>
+    </tr>
+    <tr>
+      <th>Male</th>
+      <td>55</td>
+      <td>20</td>
+      <td>122</td>
+      <td>118</td>
+      <td>157</td>
+    </tr>
+    <tr>
+      <th rowspan="2" valign="top">(30, 40]</th>
+      <th>Female</th>
+      <td>42</td>
+      <td>46</td>
+      <td>149</td>
+      <td>78</td>
+      <td>159</td>
+    </tr>
+    <tr>
+      <th>Male</th>
+      <td>69</td>
+      <td>47</td>
+      <td>115</td>
+      <td>104</td>
+      <td>123</td>
+    </tr>
+    <tr>
+      <th>(40, 50]</th>
+      <th>Female</th>
+      <td>55</td>
+      <td>53</td>
+      <td>150</td>
+      <td>87</td>
+      <td>157</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="29">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalize within each stratum to get proportions</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>dx <span class="op">=</span> dx.<span class="bu">apply</span>(<span class="kw">lambda</span> x: x<span class="op">/</span>x.<span class="bu">sum</span>(), axis<span class="op">=</span><span class="dv">1</span>) </span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>dx.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="29">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>DMDEDUC2x</th>
+      <th>9-11</th>
+      <th>&lt;9</th>
+      <th>College</th>
+      <th>HS/GED</th>
+      <th>Some college/AA</th>
+    </tr>
+    <tr>
+      <th>agegrp</th>
+      <th>RIAGENDRx</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="2" valign="top">(18, 30]</th>
+      <th>Female</th>
+      <td>0.079566</td>
+      <td>0.048825</td>
+      <td>0.282098</td>
+      <td>0.215190</td>
+      <td>0.374322</td>
+    </tr>
+    <tr>
+      <th>Male</th>
+      <td>0.116525</td>
+      <td>0.042373</td>
+      <td>0.258475</td>
+      <td>0.250000</td>
+      <td>0.332627</td>
+    </tr>
+    <tr>
+      <th rowspan="2" valign="top">(30, 40]</th>
+      <th>Female</th>
+      <td>0.088608</td>
+      <td>0.097046</td>
+      <td>0.314346</td>
+      <td>0.164557</td>
+      <td>0.335443</td>
+    </tr>
+    <tr>
+      <th>Male</th>
+      <td>0.150655</td>
+      <td>0.102620</td>
+      <td>0.251092</td>
+      <td>0.227074</td>
+      <td>0.268559</td>
+    </tr>
+    <tr>
+      <th>(40, 50]</th>
+      <th>Female</th>
+      <td>0.109562</td>
+      <td>0.105578</td>
+      <td>0.298805</td>
+      <td>0.173307</td>
+      <td>0.312749</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="30">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(dx.to_string(float_format<span class="op">=</span><span class="st">"</span><span class="sc">%.3f</span><span class="st">"</span>))  <span class="co"># Limit display to 3 decimal places</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>DMDEDUC2x           9-11    &lt;9  College  HS/GED  Some college/AA
+agegrp   RIAGENDRx                                              
+(18, 30] Female    0.080 0.049    0.282   0.215            0.374
+         Male      0.117 0.042    0.258   0.250            0.333
+(30, 40] Female    0.089 0.097    0.314   0.165            0.335
+         Male      0.151 0.103    0.251   0.227            0.269
+(40, 50] Female    0.110 0.106    0.299   0.173            0.313
+         Male      0.142 0.112    0.274   0.209            0.262
+(50, 60] Female    0.117 0.102    0.245   0.234            0.302
+         Male      0.148 0.123    0.231   0.242            0.256
+(60, 70] Female    0.118 0.188    0.195   0.206            0.293
+         Male      0.135 0.151    0.233   0.231            0.249
+(70, 80] Female    0.105 0.225    0.149   0.240            0.281
+         Male      0.113 0.180    0.237   0.215            0.255</code></pre>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../code/8_Tables_Histograms_and_Boxplots_in_Python.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Visualizing Data in Python</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../code/10_nhanes_univariate_practice.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Practice notebook for univariate analysis using NHANES data</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

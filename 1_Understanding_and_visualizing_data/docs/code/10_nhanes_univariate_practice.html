@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.1.251">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Understanding and Visualizing Data with Python - 11&nbsp; Practice notebook for univariate analysis using NHANES data</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../code/9_nhanes_univariate_analyses.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+</head>
+
+<body class="nav-sidebar floating">
+
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Practice notebook for univariate analysis using NHANES data</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Understanding and Visualizing Data with Python</a> 
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">index.html</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/1_intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Lecture notes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/2_introduction_jupyter.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">What is Jupyter Notebooks?</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/3_data_types.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Data Types in Python</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/4_libraries_data_management.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Python Libraries</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/5_nhanes_data_basics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Using Python to read data files and explore their contents</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/6_week1_python_resources.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Python Resources</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/7_python_libraries.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Python Libraries</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/8_Tables_Histograms_and_Boxplots_in_Python.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Visualizing Data in Python</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/9_nhanes_univariate_analyses.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Univariate data analyses - NHANES case study</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/10_nhanes_univariate_practice.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Practice notebook for univariate analysis using NHANES data</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#question-1" id="toc-question-1" class="nav-link active" data-scroll-target="#question-1"><span class="toc-section-number">11.1</span>  Question 1</a></li>
+  <li><a href="#question-2" id="toc-question-2" class="nav-link" data-scroll-target="#question-2"><span class="toc-section-number">11.2</span>  Question 2</a></li>
+  <li><a href="#question-3" id="toc-question-3" class="nav-link" data-scroll-target="#question-3"><span class="toc-section-number">11.3</span>  Question 3</a></li>
+  <li><a href="#question-4" id="toc-question-4" class="nav-link" data-scroll-target="#question-4"><span class="toc-section-number">11.4</span>  Question 4</a></li>
+  <li><a href="#question-5" id="toc-question-5" class="nav-link" data-scroll-target="#question-5"><span class="toc-section-number">11.5</span>  Question 5</a></li>
+  <li><a href="#question-6" id="toc-question-6" class="nav-link" data-scroll-target="#question-6"><span class="toc-section-number">11.6</span>  Question 6</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Practice notebook for univariate analysis using NHANES data</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<p>This notebook will give you the opportunity to perform some univariate analyses on your own using the NHANES. These analyses are similar to what was done in the week 2 NHANES case study notebook.</p>
+<p>You can enter your code into the cells that say “enter your code here”, and you can type responses to the questions into the cells that say “Type Markdown and Latex”.</p>
+<p>Note that most of the code that you will need to write below is very similar to code that appears in the case study notebook. You will need to edit code from that notebook in small ways to adapt it to the prompts below.</p>
+<p>To get started, we will use the same module imports and read the data in the same way as we did in the case study:</p>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>matplotlib inline</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>da <span class="op">=</span> pd.read_csv(<span class="st">"../data/nhanes_2015_2016.csv"</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>da.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="2">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>SEQN</th>
+      <th>ALQ101</th>
+      <th>ALQ110</th>
+      <th>ALQ130</th>
+      <th>SMQ020</th>
+      <th>RIAGENDR</th>
+      <th>RIDAGEYR</th>
+      <th>RIDRETH1</th>
+      <th>DMDCITZN</th>
+      <th>DMDEDUC2</th>
+      <th>...</th>
+      <th>BPXSY2</th>
+      <th>BPXDI2</th>
+      <th>BMXWT</th>
+      <th>BMXHT</th>
+      <th>BMXBMI</th>
+      <th>BMXLEG</th>
+      <th>BMXARML</th>
+      <th>BMXARMC</th>
+      <th>BMXWAIST</th>
+      <th>HIQ210</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>83732</td>
+      <td>1.0</td>
+      <td>NaN</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>62</td>
+      <td>3</td>
+      <td>1.0</td>
+      <td>5.0</td>
+      <td>...</td>
+      <td>124.0</td>
+      <td>64.0</td>
+      <td>94.8</td>
+      <td>184.5</td>
+      <td>27.8</td>
+      <td>43.3</td>
+      <td>43.6</td>
+      <td>35.9</td>
+      <td>101.1</td>
+      <td>2.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>83733</td>
+      <td>1.0</td>
+      <td>NaN</td>
+      <td>6.0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>53</td>
+      <td>3</td>
+      <td>2.0</td>
+      <td>3.0</td>
+      <td>...</td>
+      <td>140.0</td>
+      <td>88.0</td>
+      <td>90.4</td>
+      <td>171.4</td>
+      <td>30.8</td>
+      <td>38.0</td>
+      <td>40.0</td>
+      <td>33.2</td>
+      <td>107.9</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>83734</td>
+      <td>1.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1</td>
+      <td>1</td>
+      <td>78</td>
+      <td>3</td>
+      <td>1.0</td>
+      <td>3.0</td>
+      <td>...</td>
+      <td>132.0</td>
+      <td>44.0</td>
+      <td>83.4</td>
+      <td>170.1</td>
+      <td>28.8</td>
+      <td>35.6</td>
+      <td>37.0</td>
+      <td>31.0</td>
+      <td>116.5</td>
+      <td>2.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>83735</td>
+      <td>2.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>2</td>
+      <td>56</td>
+      <td>3</td>
+      <td>1.0</td>
+      <td>5.0</td>
+      <td>...</td>
+      <td>134.0</td>
+      <td>68.0</td>
+      <td>109.8</td>
+      <td>160.9</td>
+      <td>42.4</td>
+      <td>38.5</td>
+      <td>37.7</td>
+      <td>38.3</td>
+      <td>110.1</td>
+      <td>2.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>83736</td>
+      <td>2.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>2</td>
+      <td>42</td>
+      <td>4</td>
+      <td>1.0</td>
+      <td>4.0</td>
+      <td>...</td>
+      <td>114.0</td>
+      <td>54.0</td>
+      <td>55.2</td>
+      <td>164.9</td>
+      <td>20.3</td>
+      <td>37.4</td>
+      <td>36.0</td>
+      <td>27.2</td>
+      <td>80.4</td>
+      <td>2.0</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 28 columns</p>
+</div>
+</div>
+</div>
+<section id="question-1" class="level2" data-number="11.1">
+<h2 data-number="11.1" class="anchored" data-anchor-id="question-1"><span class="header-section-number">11.1</span> Question 1</h2>
+<p>Relabel the marital status variable <a href="https://wwwn.cdc.gov/Nchs/Nhanes/2015-2016/DEMO_I.htm#DMDMARTL">DMDMARTL</a> to have brief but informative character labels. Then construct a frequency table of these values for all people, then for women only, and for men only. Then construct these three frequency tables using only people whose age is between 30 and 40.</p>
+<div class="cell" data-execution_count="52">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># relabel colum</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>da[<span class="st">'DMDMARTLx'</span>] <span class="op">=</span> da[<span class="st">'DMDMARTL'</span>].replace({<span class="dv">1</span>:<span class="st">'Married'</span>, <span class="dv">2</span>:<span class="st">'Widowed'</span>, <span class="dv">3</span>:<span class="st">'Divorced'</span>, <span class="dv">4</span>:<span class="st">'Separated'</span>, <span class="dv">5</span>:<span class="st">'Never married'</span>, <span class="dv">6</span>:<span class="st">'Living with partner'</span>, <span class="dv">77</span>:<span class="st">'Refused'</span>, <span class="dv">99</span>:<span class="st">'Unknown'</span> }).fillna(<span class="st">'Missing'</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>da[<span class="st">'RIAGENDRx'</span>] <span class="op">=</span> da[<span class="st">'RIAGENDR'</span>].replace({<span class="dv">1</span>:<span class="st">'Male'</span>, <span class="dv">2</span>:<span class="st">'Female'</span>})</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#create freq table</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> da[<span class="st">'DMDMARTLx'</span>].value_counts()</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>x <span class="op">/</span> x.<span class="bu">sum</span>()<span class="op">*</span><span class="dv">100</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="52">
+<pre><code>Married                48.474281
+Never married          17.506539
+Divorced               10.095902
+Living with partner     9.189189
+Widowed                 6.904969
+Missing                 4.551003
+Separated               3.243243
+Refused                 0.034874
+Name: DMDMARTLx, dtype: float64</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#freq table for women only</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> da[da[<span class="st">'RIAGENDR'</span>]<span class="op">==</span><span class="dv">2</span>][<span class="st">'DMDMARTLx'</span>].value_counts()</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>x <span class="op">/</span> x.<span class="bu">sum</span>()<span class="op">*</span><span class="dv">100</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="21">
+<pre><code>Married                43.783602
+Never married          17.473118
+Divorced               11.760753
+Widowed                 9.946237
+Living with partner     8.803763
+Missing                 4.233871
+Separated               3.965054
+Refused                 0.033602
+Name: DMDMARTLx, dtype: float64</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#freq table for male only</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> da[da[<span class="st">'RIAGENDR'</span>]<span class="op">==</span><span class="dv">1</span>][<span class="st">'DMDMARTLx'</span>].value_counts()</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>x <span class="op">/</span> x.<span class="bu">sum</span>()<span class="op">*</span><span class="dv">100</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="22">
+<pre><code>Married                53.533889
+Never married          17.542588
+Living with partner     9.604929
+Divorced                8.300109
+Missing                 4.893077
+Widowed                 3.624502
+Separated               2.464661
+Refused                 0.036245
+Name: DMDMARTLx, dtype: float64</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="23">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">#freq table for all people, age 30-40</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>age30_40 <span class="op">=</span> da[(da[<span class="st">'RIDAGEYR'</span>] <span class="op">&gt;=</span> <span class="dv">30</span>) <span class="op">&amp;</span> (da[<span class="st">'RIDAGEYR'</span>] <span class="op">&lt;=</span> <span class="dv">40</span>)]</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> age30_40[<span class="st">'DMDMARTLx'</span>].value_counts()</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>x <span class="op">/</span> x.<span class="bu">sum</span>()<span class="op">*</span><span class="dv">100</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="23">
+<pre><code>Married                54.580897
+Never married          21.150097
+Living with partner    13.937622
+Divorced                6.822612
+Separated               2.923977
+Widowed                 0.487329
+Refused                 0.097466
+Name: DMDMARTLx, dtype: float64</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="24">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">#freq table for females, age 30-40</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> age30_40[age30_40[<span class="st">'RIAGENDR'</span>]<span class="op">==</span><span class="dv">2</span>][<span class="st">'DMDMARTLx'</span>].value_counts()</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>x <span class="op">/</span> x.<span class="bu">sum</span>()<span class="op">*</span><span class="dv">100</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="24">
+<pre><code>Married                53.571429
+Never married          21.804511
+Living with partner    12.218045
+Divorced                8.646617
+Separated               3.383459
+Widowed                 0.375940
+Name: DMDMARTLx, dtype: float64</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="25">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">#freq table for males, age 30-40</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> age30_40[age30_40[<span class="st">'RIAGENDR'</span>]<span class="op">==</span><span class="dv">1</span>][<span class="st">'DMDMARTLx'</span>].value_counts()</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>x <span class="op">/</span> x.<span class="bu">sum</span>()<span class="op">*</span><span class="dv">100</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="25">
+<pre><code>Married                55.668016
+Never married          20.445344
+Living with partner    15.789474
+Divorced                4.858300
+Separated               2.429150
+Widowed                 0.607287
+Refused                 0.202429
+Name: DMDMARTLx, dtype: float64</code></pre>
+</div>
+</div>
+<p><strong>Q1a.</strong> Briefly comment on some of the differences that you observe between the distribution of marital status between women and men, for people of all ages.</p>
+<p>There are less married women and that seems to be due to more women being divorced</p>
+<p><strong>Q1b.</strong> Briefly comment on the differences that you observe between the distribution of marital status states for women between the overall population, and for women between the ages of 30 and 40.</p>
+<p>More women between 30-40 are married compared to the whole population and this group as less rates of widowed women</p>
+<p><strong>Q1c.</strong> Repeat part b for the men.</p>
+<p>More man in their 30-4o live with a partner</p>
+</section>
+<section id="question-2" class="level2" data-number="11.2">
+<h2 data-number="11.2" class="anchored" data-anchor-id="question-2"><span class="header-section-number">11.2</span> Question 2</h2>
+<p>Restricting to the female population, stratify the subjects into age bands no wider than ten years, and construct the distribution of marital status within each age band. Within each age band, present the distribution in terms of proportions that must sum to 1.</p>
+<div class="cell" data-execution_count="44">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#subset df</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>females <span class="op">=</span> da[da[<span class="st">'RIAGENDR'</span>] <span class="op">==</span> <span class="dv">2</span>].copy()</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co">#stratify</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>females[<span class="st">'agegr'</span>] <span class="op">=</span> pd.cut(females[<span class="st">'RIDAGEYR'</span>], [<span class="dv">18</span>, <span class="dv">30</span>, <span class="dv">40</span>, <span class="dv">50</span>, <span class="dv">60</span>, <span class="dv">70</span>, <span class="dv">80</span>])</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co">#group data</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span>females.groupby(<span class="st">"agegr"</span>)[<span class="st">"DMDMARTLx"</span>].value_counts().unstack().fillna(<span class="dv">0</span>)</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="co">#normalize</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.<span class="bu">apply</span>(<span class="kw">lambda</span> x : x<span class="op">/</span>x.<span class="bu">sum</span>() <span class="op">*</span> <span class="dv">100</span>, axis <span class="op">=</span> <span class="dv">1</span>)</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="44">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th>DMDMARTLx</th>
+      <th>Divorced</th>
+      <th>Living with partner</th>
+      <th>Married</th>
+      <th>Missing</th>
+      <th>Never married</th>
+      <th>Refused</th>
+      <th>Separated</th>
+      <th>Widowed</th>
+    </tr>
+    <tr>
+      <th>agegr</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>(18, 30]</th>
+      <td>1.806240</td>
+      <td>18.719212</td>
+      <td>25.944171</td>
+      <td>9.195402</td>
+      <td>42.528736</td>
+      <td>0.000000</td>
+      <td>1.806240</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>(30, 40]</th>
+      <td>9.071730</td>
+      <td>12.025316</td>
+      <td>54.430380</td>
+      <td>0.000000</td>
+      <td>20.464135</td>
+      <td>0.000000</td>
+      <td>3.586498</td>
+      <td>0.421941</td>
+    </tr>
+    <tr>
+      <th>(40, 50]</th>
+      <td>13.745020</td>
+      <td>7.370518</td>
+      <td>57.370518</td>
+      <td>0.000000</td>
+      <td>12.549801</td>
+      <td>0.000000</td>
+      <td>6.573705</td>
+      <td>2.390438</td>
+    </tr>
+    <tr>
+      <th>(50, 60]</th>
+      <td>17.659574</td>
+      <td>6.808511</td>
+      <td>54.680851</td>
+      <td>0.000000</td>
+      <td>8.936170</td>
+      <td>0.212766</td>
+      <td>5.744681</td>
+      <td>5.957447</td>
+    </tr>
+    <tr>
+      <th>(60, 70]</th>
+      <td>19.274376</td>
+      <td>4.308390</td>
+      <td>48.072562</td>
+      <td>0.000000</td>
+      <td>8.616780</td>
+      <td>0.000000</td>
+      <td>4.988662</td>
+      <td>14.739229</td>
+    </tr>
+    <tr>
+      <th>(70, 80]</th>
+      <td>14.390244</td>
+      <td>0.731707</td>
+      <td>31.707317</td>
+      <td>0.000000</td>
+      <td>5.121951</td>
+      <td>0.000000</td>
+      <td>1.951220</td>
+      <td>46.097561</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<p><strong>Q2a.</strong> Comment on the trends that you see in this series of marginal distributions.</p>
+<p>We see an increase in: divorce over age groups We see a decrease in the proportion of females living with a partner + women never married There is a big spike in marriages (up to 50%) from age group 18-30 to 30-40 and then a slow decline The largest group of widowed women is in the oldest age group</p>
+<p><strong>Q2b.</strong> Repeat the construction for males.</p>
+<div class="cell" data-execution_count="45">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">#subset df</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>males <span class="op">=</span> da[da[<span class="st">'RIAGENDR'</span>] <span class="op">==</span> <span class="dv">1</span>].copy()</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co">#stratify</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>males[<span class="st">'agegr'</span>] <span class="op">=</span> pd.cut(males[<span class="st">'RIDAGEYR'</span>], [<span class="dv">18</span>, <span class="dv">30</span>, <span class="dv">40</span>, <span class="dv">50</span>, <span class="dv">60</span>, <span class="dv">70</span>, <span class="dv">80</span>])</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co">#group data</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span>males.groupby(<span class="st">"agegr"</span>)[<span class="st">"DMDMARTLx"</span>].value_counts().unstack().fillna(<span class="dv">0</span>)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="co">#normalize</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.<span class="bu">apply</span>(<span class="kw">lambda</span> x : x<span class="op">/</span>x.<span class="bu">sum</span>() <span class="op">*</span> <span class="dv">100</span>, axis <span class="op">=</span> <span class="dv">1</span>)</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="45">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th>DMDMARTLx</th>
+      <th>Divorced</th>
+      <th>Living with partner</th>
+      <th>Married</th>
+      <th>Missing</th>
+      <th>Never married</th>
+      <th>Refused</th>
+      <th>Separated</th>
+      <th>Widowed</th>
+    </tr>
+    <tr>
+      <th>agegr</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>(18, 30]</th>
+      <td>0.367647</td>
+      <td>17.463235</td>
+      <td>19.117647</td>
+      <td>13.235294</td>
+      <td>48.161765</td>
+      <td>0.000000</td>
+      <td>1.286765</td>
+      <td>0.367647</td>
+    </tr>
+    <tr>
+      <th>(30, 40]</th>
+      <td>5.240175</td>
+      <td>15.720524</td>
+      <td>56.331878</td>
+      <td>0.000000</td>
+      <td>19.432314</td>
+      <td>0.218341</td>
+      <td>2.620087</td>
+      <td>0.436681</td>
+    </tr>
+    <tr>
+      <th>(40, 50]</th>
+      <td>8.478803</td>
+      <td>8.229426</td>
+      <td>70.324190</td>
+      <td>0.000000</td>
+      <td>9.725686</td>
+      <td>0.000000</td>
+      <td>2.743142</td>
+      <td>0.498753</td>
+    </tr>
+    <tr>
+      <th>(50, 60]</th>
+      <td>12.555066</td>
+      <td>7.488987</td>
+      <td>65.198238</td>
+      <td>0.000000</td>
+      <td>10.352423</td>
+      <td>0.000000</td>
+      <td>2.202643</td>
+      <td>2.202643</td>
+    </tr>
+    <tr>
+      <th>(60, 70]</th>
+      <td>12.585812</td>
+      <td>5.034325</td>
+      <td>66.590389</td>
+      <td>0.000000</td>
+      <td>8.695652</td>
+      <td>0.000000</td>
+      <td>3.203661</td>
+      <td>3.890160</td>
+    </tr>
+    <tr>
+      <th>(70, 80]</th>
+      <td>14.179104</td>
+      <td>2.238806</td>
+      <td>61.194030</td>
+      <td>0.000000</td>
+      <td>2.238806</td>
+      <td>0.000000</td>
+      <td>3.482587</td>
+      <td>16.666667</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<p><strong>Q2c.</strong> Comment on any notable differences that you see when comparing these results for females and for males.</p>
+<p>Increase in divorce over time Decrease of males living with a partner and males that never married Largest increase in married males in group 30-40 and then slow decrease (but not to levels as for females) Separated relatively constant Largest increase in widowed men in the last group (but small compared to females)</p>
+</section>
+<section id="question-3" class="level2" data-number="11.3">
+<h2 data-number="11.3" class="anchored" data-anchor-id="question-3"><span class="header-section-number">11.3</span> Question 3</h2>
+<p>Construct a histogram of the distribution of heights using the BMXHT variable in the NHANES sample.</p>
+<div class="cell" data-execution_count="47">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>sns.histplot(da.BMXHT)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="10_nhanes_univariate_practice_files/figure-html/cell-11-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p><strong>Q3a.</strong> Use the <code>bins</code> argument to <a href="https://seaborn.pydata.org/generated/seaborn.distplot.html">distplot</a> to produce histograms with different numbers of bins. Assess whether the default value for this argument gives a meaningful result, and comment on what happens as the number of bins grows excessively large or excessively small.</p>
+<div class="cell" data-execution_count="49">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>sns.histplot(da.BMXHT, bins <span class="op">=</span> <span class="dv">200</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="10_nhanes_univariate_practice_files/figure-html/cell-12-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>The value looks good</p>
+<p><strong>Q3b.</strong> Make separate histograms for the heights of women and men, then make a side-by-side boxplot showing the heights of women and men.</p>
+<div class="cell" data-execution_count="54">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> sns.FacetGrid(da, row <span class="op">=</span> <span class="st">'RIAGENDRx'</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> g.<span class="bu">map</span>(plt.hist, <span class="st">"BMXHT"</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="10_nhanes_univariate_practice_files/figure-html/cell-13-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="56">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>sns.boxplot(y <span class="op">=</span> da[<span class="st">'BMXHT'</span>], x <span class="op">=</span> da[<span class="st">'RIAGENDRx'</span>])</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="10_nhanes_univariate_practice_files/figure-html/cell-14-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p><strong>Q3c.</strong> Comment on what features, if any are not represented clearly in the boxplots, and what features, if any, are easier to see in the boxplots than in the histograms.</p>
+<p>Males are larger than females (we can see this in both plots, however the median is easier to see in the boxplot). There are outliers on both ends (clearer in the boxplot)</p>
+</section>
+<section id="question-4" class="level2" data-number="11.4">
+<h2 data-number="11.4" class="anchored" data-anchor-id="question-4"><span class="header-section-number">11.4</span> Question 4</h2>
+<p>Make a boxplot showing the distribution of within-subject differences between the first and second systolic blood pressure measurents (<a href="https://wwwn.cdc.gov/Nchs/Nhanes/2015-2016/BPX_I.htm#BPXSY1">BPXSY1</a> and <a href="https://wwwn.cdc.gov/Nchs/Nhanes/2015-2016/BPX_I.htm#BPXSY2">BPXSY2</a>).</p>
+<div class="cell" data-execution_count="64">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>sns.boxplot(da[[<span class="st">'BPXSY1'</span>, <span class="st">'BPXSY2'</span>]])</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="10_nhanes_univariate_practice_files/figure-html/cell-15-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p><strong>Q4a.</strong> What proportion of the subjects have a lower SBP on the second reading compared to the first?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># insert your code here</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Q4b.</strong> Make side-by-side boxplots of the two systolic blood pressure variables.</p>
+<div class="cell" data-execution_count="65">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>sns.boxplot(da[[<span class="st">'BPXSY1'</span>, <span class="st">'BPXSY2'</span>]])</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="10_nhanes_univariate_practice_files/figure-html/cell-17-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="63">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span>plt.subplots(<span class="dv">1</span>,<span class="dv">2</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>sns.boxplot(da[<span class="st">'BPXSY1'</span>], ax <span class="op">=</span> ax[<span class="dv">0</span>]).set_title(<span class="st">"BPXSY1"</span>)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>sns.boxplot(da[<span class="st">'BPXSY2'</span>], ax <span class="op">=</span> ax[<span class="dv">1</span>]).set_title(<span class="st">"BPXSY2"</span>)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="10_nhanes_univariate_practice_files/figure-html/cell-18-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p><strong>Q4c.</strong> Comment on the variation within either the first or second systolic blood pressure measurements, and the variation in the within-subject differences between the first and second systolic blood pressure measurements.</p>
+</section>
+<section id="question-5" class="level2" data-number="11.5">
+<h2 data-number="11.5" class="anchored" data-anchor-id="question-5"><span class="header-section-number">11.5</span> Question 5</h2>
+<p>Construct a frequency table of household sizes for people within each educational attainment category (the relevant variable is <a href="https://wwwn.cdc.gov/Nchs/Nhanes/2015-2016/DEMO_I.htm#DMDEDUC2">DMDEDUC2</a>). Convert the frequencies to proportions.</p>
+<div class="cell" data-execution_count="67">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>dx <span class="op">=</span> da.groupby([<span class="st">"DMDEDUC2"</span>])[<span class="st">"DMDHHSIZ"</span>].value_counts().unstack()</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>dx <span class="op">=</span> dx.<span class="bu">apply</span>(<span class="kw">lambda</span> x: x<span class="op">/</span>x.<span class="bu">sum</span>(), axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>dx</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="co">#print(dx.to_string(float_format="%.2f")) </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="67">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th>DMDHHSIZ</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+      <th>6</th>
+      <th>7</th>
+    </tr>
+    <tr>
+      <th>DMDEDUC2</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1.0</th>
+      <td>0.109924</td>
+      <td>0.224427</td>
+      <td>0.146565</td>
+      <td>0.132824</td>
+      <td>0.148092</td>
+      <td>0.108397</td>
+      <td>0.129771</td>
+    </tr>
+    <tr>
+      <th>2.0</th>
+      <td>0.116641</td>
+      <td>0.222395</td>
+      <td>0.163297</td>
+      <td>0.152411</td>
+      <td>0.146190</td>
+      <td>0.113530</td>
+      <td>0.085537</td>
+    </tr>
+    <tr>
+      <th>3.0</th>
+      <td>0.152614</td>
+      <td>0.270658</td>
+      <td>0.171164</td>
+      <td>0.161889</td>
+      <td>0.109612</td>
+      <td>0.065767</td>
+      <td>0.068297</td>
+    </tr>
+    <tr>
+      <th>4.0</th>
+      <td>0.151141</td>
+      <td>0.268970</td>
+      <td>0.193091</td>
+      <td>0.169031</td>
+      <td>0.122147</td>
+      <td>0.050586</td>
+      <td>0.045034</td>
+    </tr>
+    <tr>
+      <th>5.0</th>
+      <td>0.142753</td>
+      <td>0.347731</td>
+      <td>0.193997</td>
+      <td>0.165447</td>
+      <td>0.095168</td>
+      <td>0.029283</td>
+      <td>0.025622</td>
+    </tr>
+    <tr>
+      <th>9.0</th>
+      <td>NaN</td>
+      <td>0.666667</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.333333</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<p><strong>Q5a.</strong> Comment on any major differences among the distributions.</p>
+<p><strong>Q5b.</strong> Restrict the sample to people between 30 and 40 years of age. Then calculate the median household size for women and men within each level of educational attainment.</p>
+<div class="cell" data-execution_count="68">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>da[(da.RIDAGEYR <span class="op">&gt;=</span> <span class="dv">30</span>) <span class="op">&amp;</span> (da.RIDAGEYR <span class="op">&lt;=</span> <span class="dv">40</span>)].groupby([<span class="st">"DMDEDUC2"</span>, <span class="st">"RIAGENDR"</span>])[<span class="st">"DMDHHSIZ"</span>].median()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="68">
+<pre><code>DMDEDUC2  RIAGENDR
+1.0       1           5.0
+          2           5.0
+2.0       1           4.5
+          2           5.0
+3.0       1           4.0
+          2           5.0
+4.0       1           4.0
+          2           4.0
+5.0       1           3.0
+          2           3.0
+Name: DMDHHSIZ, dtype: float64</code></pre>
+</div>
+</div>
+</section>
+<section id="question-6" class="level2" data-number="11.6">
+<h2 data-number="11.6" class="anchored" data-anchor-id="question-6"><span class="header-section-number">11.6</span> Question 6</h2>
+<p>The participants can be clustered into “maked variance units” (MVU) based on every combination of the variables <a href="https://wwwn.cdc.gov/Nchs/Nhanes/2015-2016/DEMO_I.htm#SDMVSTRA">SDMVSTRA</a> and <a href="https://wwwn.cdc.gov/Nchs/Nhanes/2015-2016/DEMO_I.htm#SDMVPSU">SDMVPSU</a>. Calculate the mean age (<a href="https://wwwn.cdc.gov/Nchs/Nhanes/2015-2016/DEMO_I.htm#RIDAGEYR">RIDAGEYR</a>), height (<a href="https://wwwn.cdc.gov/Nchs/Nhanes/2015-2016/BMX_I.htm#BMXHT">BMXHT</a>), and BMI (<a href="https://wwwn.cdc.gov/Nchs/Nhanes/2015-2016/BMX_I.htm#BMXBMI">BMXBMI</a>) for each gender (<a href="https://wwwn.cdc.gov/Nchs/Nhanes/2015-2016/DEMO_I.htm#RIAGENDR">RIAGENDR</a>), within each MVU, and report the ratio between the largest and smallest mean (e.g.&nbsp;for height) across the MVUs.</p>
+<div class="cell" data-execution_count="72">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>da.groupby([<span class="st">'SDMVSTRA'</span>, <span class="st">'SDMVPSU'</span>, <span class="st">'RIAGENDR'</span>]) <span class="op">\</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    [[<span class="st">'RIDAGEYR'</span>, <span class="st">'BMXHT'</span>, <span class="st">'BMXBMI'</span>]] <span class="op">\</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    .mean().unstack()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="72">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th></th>
+      <th colspan="2" halign="left">RIDAGEYR</th>
+      <th colspan="2" halign="left">BMXHT</th>
+      <th colspan="2" halign="left">BMXBMI</th>
+    </tr>
+    <tr>
+      <th></th>
+      <th>RIAGENDR</th>
+      <th>1</th>
+      <th>2</th>
+      <th>1</th>
+      <th>2</th>
+      <th>1</th>
+      <th>2</th>
+    </tr>
+    <tr>
+      <th>SDMVSTRA</th>
+      <th>SDMVPSU</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="2" valign="top">119</th>
+      <th>1</th>
+      <td>47.861111</td>
+      <td>47.663265</td>
+      <td>172.741667</td>
+      <td>159.570408</td>
+      <td>26.958333</td>
+      <td>30.052041</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>54.363636</td>
+      <td>52.987952</td>
+      <td>172.906818</td>
+      <td>159.244578</td>
+      <td>27.160465</td>
+      <td>27.849398</td>
+    </tr>
+    <tr>
+      <th rowspan="2" valign="top">120</th>
+      <th>1</th>
+      <td>43.130000</td>
+      <td>43.636364</td>
+      <td>169.537755</td>
+      <td>155.402041</td>
+      <td>30.939175</td>
+      <td>32.419388</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>45.219178</td>
+      <td>43.736111</td>
+      <td>173.075342</td>
+      <td>159.218056</td>
+      <td>27.727397</td>
+      <td>27.400000</td>
+    </tr>
+    <tr>
+      <th rowspan="2" valign="top">121</th>
+      <th>1</th>
+      <td>46.750000</td>
+      <td>44.397959</td>
+      <td>172.177885</td>
+      <td>158.871579</td>
+      <td>29.416505</td>
+      <td>30.856842</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>42.063158</td>
+      <td>44.376344</td>
+      <td>174.764516</td>
+      <td>160.229032</td>
+      <td>26.273118</td>
+      <td>26.470968</td>
+    </tr>
+    <tr>
+      <th rowspan="2" valign="top">122</th>
+      <th>1</th>
+      <td>44.653061</td>
+      <td>42.897436</td>
+      <td>173.998969</td>
+      <td>161.315385</td>
+      <td>28.528866</td>
+      <td>29.447436</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>44.320000</td>
+      <td>47.333333</td>
+      <td>170.332323</td>
+      <td>157.231111</td>
+      <td>25.744444</td>
+      <td>26.611111</td>
+    </tr>
+    <tr>
+      <th rowspan="2" valign="top">123</th>
+      <th>1</th>
+      <td>47.829787</td>
+      <td>44.841121</td>
+      <td>174.315217</td>
+      <td>162.059615</td>
+      <td>29.231522</td>
+      <td>29.905769</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>52.126582</td>
+      <td>46.457447</td>
+      <td>174.454430</td>
+      <td>160.476596</td>
+      <td>28.811392</td>
+      <td>30.641489</td>
+    </tr>
+    <tr>
+      <th rowspan="2" valign="top">124</th>
+      <th>1</th>
+      <td>50.750000</td>
+      <td>51.664000</td>
+      <td>172.109009</td>
+      <td>158.788710</td>
+      <td>28.614414</td>
+      <td>29.533065</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>48.245614</td>
+      <td>42.541667</td>
+      <td>174.291228</td>
+      <td>162.853521</td>
+      <td>27.714035</td>
+      <td>28.640845</td>
+    </tr>
+    <tr>
+      <th rowspan="2" valign="top">125</th>
+      <th>1</th>
+      <td>55.165289</td>
+      <td>50.900901</td>
+      <td>173.631092</td>
+      <td>160.762385</td>
+      <td>29.727731</td>
+      <td>30.385321</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>49.705882</td>
+      <td>51.660000</td>
+      <td>174.456863</td>
+      <td>160.021429</td>
+      <td>29.143564</td>
+      <td>28.564286</td>
+    </tr>
+    <tr>
+      <th rowspan="2" valign="top">126</th>
+      <th>1</th>
+      <td>48.416667</td>
+      <td>46.229167</td>
+      <td>175.149398</td>
+      <td>160.387500</td>
+      <td>29.033333</td>
+      <td>31.262500</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>48.666667</td>
+      <td>47.205882</td>
+      <td>174.713043</td>
+      <td>160.892000</td>
+      <td>29.039130</td>
+      <td>29.612121</td>
+    </tr>
+    <tr>
+      <th rowspan="2" valign="top">127</th>
+      <th>1</th>
+      <td>53.137931</td>
+      <td>49.694444</td>
+      <td>171.545349</td>
+      <td>157.422430</td>
+      <td>31.062353</td>
+      <td>32.189720</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>54.070588</td>
+      <td>51.486239</td>
+      <td>173.366667</td>
+      <td>159.022936</td>
+      <td>30.557831</td>
+      <td>30.770642</td>
+    </tr>
+    <tr>
+      <th rowspan="2" valign="top">128</th>
+      <th>1</th>
+      <td>53.673267</td>
+      <td>55.638462</td>
+      <td>169.325000</td>
+      <td>156.339063</td>
+      <td>31.749000</td>
+      <td>32.303125</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>45.822785</td>
+      <td>45.589744</td>
+      <td>172.400000</td>
+      <td>160.437179</td>
+      <td>26.835443</td>
+      <td>27.491026</td>
+    </tr>
+    <tr>
+      <th rowspan="2" valign="top">129</th>
+      <th>1</th>
+      <td>43.922222</td>
+      <td>45.329787</td>
+      <td>171.094318</td>
+      <td>156.900000</td>
+      <td>26.493182</td>
+      <td>29.019149</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>45.775510</td>
+      <td>43.500000</td>
+      <td>173.138298</td>
+      <td>161.034259</td>
+      <td>28.961702</td>
+      <td>29.429630</td>
+    </tr>
+    <tr>
+      <th rowspan="2" valign="top">130</th>
+      <th>1</th>
+      <td>50.516854</td>
+      <td>47.810526</td>
+      <td>176.974157</td>
+      <td>161.977895</td>
+      <td>30.337079</td>
+      <td>30.700000</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>50.535354</td>
+      <td>50.833333</td>
+      <td>175.061224</td>
+      <td>160.060577</td>
+      <td>29.237755</td>
+      <td>31.490385</td>
+    </tr>
+    <tr>
+      <th rowspan="2" valign="top">131</th>
+      <th>1</th>
+      <td>53.140187</td>
+      <td>54.893617</td>
+      <td>175.610476</td>
+      <td>161.989362</td>
+      <td>28.259615</td>
+      <td>30.061702</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>46.778846</td>
+      <td>45.000000</td>
+      <td>175.091346</td>
+      <td>161.673810</td>
+      <td>30.077885</td>
+      <td>32.984127</td>
+    </tr>
+    <tr>
+      <th rowspan="2" valign="top">132</th>
+      <th>1</th>
+      <td>42.380435</td>
+      <td>43.210526</td>
+      <td>172.534066</td>
+      <td>161.508421</td>
+      <td>28.546154</td>
+      <td>29.848421</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>49.038760</td>
+      <td>51.700000</td>
+      <td>172.809524</td>
+      <td>159.138281</td>
+      <td>28.966667</td>
+      <td>30.540625</td>
+    </tr>
+    <tr>
+      <th rowspan="2" valign="top">133</th>
+      <th>1</th>
+      <td>44.054795</td>
+      <td>45.105882</td>
+      <td>171.509722</td>
+      <td>158.295122</td>
+      <td>27.495833</td>
+      <td>27.959259</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>47.489796</td>
+      <td>47.063158</td>
+      <td>171.179167</td>
+      <td>158.627368</td>
+      <td>27.966667</td>
+      <td>29.000000</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<p><strong>Q6a.</strong> Comment on the extent to which mean age, height, and BMI vary among the MVUs.</p>
+<p><strong>Q6b.</strong> Calculate the inter-quartile range (IQR) for age, height, and BMI for each gender and each MVU. Report the ratio between the largest and smalles IQR across the MVUs.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># insert your code here</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Q6c.</strong> Comment on the extent to which the IQR for age, height, and BMI vary among the MVUs.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../code/9_nhanes_univariate_analyses.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Univariate data analyses - NHANES case study</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

@@ -1,0 +1,37 @@
+# Lecture notes
+
+A great resource that you can explore is the [This is Statistics website](https://thisisstatistics.org), created by the American Statistical Association. This insightful and motivating campaign has countless links, videos, and resources to raise awareness of the wide variety of fascinating careers within statistics. 
+
+
+## Definitions
+
+- The **mean (average)** of a data set is found by adding all numbers in the data set and then dividing by the number of values in the set. Its highly affected by outliers.
+- The **median** is the middle value when a data set is ordered from least to greatest. 
+- The mode is the number that occurs most often in a data set.
+
+
+- **Range**: the difference between the highest and lowest values. 
+- **Interquartile range**: the range of the middle half of a distribution. Q3-Q3
+- **Standard deviation**: average distance from the mean.
+
+
+## Standard Score (Empirical Rule)
+
+In statistics, the **standard score** is the number of standard deviations by which the value of a raw score (i.e., an observed value or data point) is above or below the mean value of what is being observed or measured.
+
+It is calculated by subtracting the population mean from an individual raw score and then dividing the difference by the population standard deviation.
+
+Standard scores are most commonly called **z-scores**.
+
+A bell-shaped or normal distributions is sometimes referred to as the **68-95-99.7 rule**: 68% of the observations are within 1 standard deviation of the mean. 95% of the observations are within 2 standard deviation of the mean. 99.7% of the observations are within 3 standard deviation of the mean. 
+
+<img width=600 src="../img/Normal-Distribution.png">
+
+
+
+## Multivariate data
+
+
+
+
+

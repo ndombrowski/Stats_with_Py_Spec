@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.1.251">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Understanding and Visualizing Data with Python - 6&nbsp; Using Python to read data files and explore their contents</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../code/6_week1_python_resources.html" rel="next">
+<link href="../code/4_libraries_data_management.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating">
+
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Using Python to read data files and explore their contents</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Understanding and Visualizing Data with Python</a> 
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">index.html</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/1_intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Lecture notes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/2_introduction_jupyter.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">What is Jupyter Notebooks?</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/3_data_types.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Data Types in Python</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/4_libraries_data_management.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Python Libraries</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/5_nhanes_data_basics.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Using Python to read data files and explore their contents</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/6_week1_python_resources.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Python Resources</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/7_python_libraries.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Python Libraries</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/8_Tables_Histograms_and_Boxplots_in_Python.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Visualizing Data in Python</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/9_nhanes_univariate_analyses.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Univariate data analyses - NHANES case study</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/10_nhanes_univariate_practice.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Practice notebook for univariate analysis using NHANES data</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#importing-libraries" id="toc-importing-libraries" class="nav-link active" data-scroll-target="#importing-libraries"><span class="toc-section-number">6.0.1</span>  Importing libraries</a></li>
+  <li><a href="#reading-a-data-file" id="toc-reading-a-data-file" class="nav-link" data-scroll-target="#reading-a-data-file"><span class="toc-section-number">6.0.2</span>  Reading a data file</a></li>
+  <li><a href="#exploring-the-contents-of-a-data-set" id="toc-exploring-the-contents-of-a-data-set" class="nav-link" data-scroll-target="#exploring-the-contents-of-a-data-set"><span class="toc-section-number">6.0.3</span>  Exploring the contents of a data set</a></li>
+  <li><a href="#slicing-a-data-set" id="toc-slicing-a-data-set" class="nav-link" data-scroll-target="#slicing-a-data-set"><span class="toc-section-number">6.0.4</span>  Slicing a data set</a></li>
+  <li><a href="#missing-values" id="toc-missing-values" class="nav-link" data-scroll-target="#missing-values"><span class="toc-section-number">6.0.5</span>  Missing values</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Using Python to read data files and explore their contents</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<p>This notebook demonstrates using the <a href="http://pandas.pydata.org">Pandas</a> data processing library to read a dataset into Python, and obtain a basic understanding of its contents.</p>
+<p>Note that Python by itself is a general-purpose programming language and does not provide high-level data processing capabilities. The Pandas library was developed to meet this need. Pandas is the most popular Python library for data manipulation, and we will use it extensively in this course.</p>
+<p>In addition to Pandas, we will also make use of the following Python libraries</p>
+<ul>
+<li><p><a href="http://www.numpy.org">Numpy</a> is a library for working with arrays of data</p></li>
+<li><p><a href="https://matplotlib.org">Matplotlib</a> is a library for making graphs</p></li>
+<li><p><a href="https://seaborn.pydata.org">Seaborn</a> is a higher-level interface to Matplotlib that can be used to simplify many graphing tasks</p></li>
+<li><p><a href="https://www.statsmodels.org/stable/index.html">Statsmodels</a> is a library that implements many statistical techniques</p></li>
+<li><p><a href="https://www.scipy.org">Scipy</a> is a library of techniques for numerical and scientific computing</p></li>
+</ul>
+<section id="importing-libraries" class="level3" data-number="6.0.1">
+<h3 data-number="6.0.1" class="anchored" data-anchor-id="importing-libraries"><span class="header-section-number">6.0.1</span> Importing libraries</h3>
+<p>When using Python, you must always begin your scripts by importing the libraries that you will be using. After importing a library, its functions can then be called from your code by prepending the library name to the function name. For example, to use the ‘<code>dot</code>’ function from the ‘<code>numpy</code>’ library, you would enter ‘<code>numpy.dot</code>’. To avoid repeatedly having to type the libary name in your scripts, it is conventional to define a two or three letter abbreviation for each library, e.g.&nbsp;‘<code>numpy</code>’ is usually abbreviated as ‘<code>np</code>’. This allows us to use ‘<code>np.dot</code>’ instead of ‘<code>numpy.dot</code>’. Similarly, the Pandas library is typically abbreviated as ‘<code>pd</code>’.</p>
+<p>The following statement imports the Pandas library, and gives it the abbreviated name ‘pd’.</p>
+<div class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="reading-a-data-file" class="level3" data-number="6.0.2">
+<h3 data-number="6.0.2" class="anchored" data-anchor-id="reading-a-data-file"><span class="header-section-number">6.0.2</span> Reading a data file</h3>
+<p>We will be working with the NHANES (National Health and Nutrition Examination Survey) data from the 2015-2016 wave, which has been discussed earlier in this course. The raw data for this study are available here:</p>
+<p>https://wwwn.cdc.gov/nchs/nhanes/Default.aspx</p>
+<p>As in many large studies, the NHANES data are spread across multiple files. The NHANES files are stored in <a href="https://v8doc.sas.com/sashtml/files/z0987199.htm">SAS transport</a> (Xport) format. This is a somewhat obscure format, and while Pandas is perfectly capable of reading the NHANES data directly from the xport files, accomplishing this task is a more advanced topic than we want to get into here. Therefore, for this course we have prepared some merged datasets in text/csv format.</p>
+<p>Pandas is a large and powerful library. Here we will only use a few of its basic features. The main data structure that Pandas works with is called a “data frame”. This is a two-dimensional table of data in which the rows typically represent cases (e.g.&nbsp;NHANES subjects), and the columns represent variables. Pandas also has a one-dimensional data structure called a <code>Series</code> that we will encounter occasionally.</p>
+<p>Pandas has a variety of functions named with the pattern ‘<code>read_xxx</code>’ for reading data in different formats into Python. Right now we will focus on reading ‘<code>csv</code>’ files, so we are using the ‘<code>read_csv</code>’ function, which can read csv (and “tsv”) format files that are exported from spreadsheet software like Excel. The ‘<code>read_csv</code>’ function by default expects the first row of the data file to contain column names.</p>
+<p>Using ‘<code>read_csv</code>’ in its default mode is fairly straightforward. There are many options to ‘<code>read_csv</code>’ that are useful for handling less-common situations. For example, you would use the option <code>sep='\t'</code> instead of the default <code>sep=','</code> if the fields of your data file are delimited by tabs instead of commas. See <a href="https://pandas.pydata.org/pandas-docs/stable/generated/pandas.read_csv.html">here</a> for the full documentation for ‘<code>read_csv</code>’.</p>
+<p>Pandas can read a data file over the internet when provided with a URL, which is what we will do below. In the Python script we will name the data set ‘<code>da</code>’, i.e.&nbsp;this is the name of the Python variable that will hold the data frame after we have loaded it.</p>
+<p>The variable ‘<code>url</code>’ holds a string (text) value, which is the internet URL where the data are located. If you have the data file in your local filesystem, you can also use ‘<code>read_csv</code>’ to read the data from this file. In this case you would pass a file path instead of a URL, e.g.&nbsp;<code>pd.read_csv("my_file.csv")</code> would read a file named <code>my_file.csv</code> that is located in your current working directory.</p>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">"../data/nhanes_2015_2016.csv"</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>da <span class="op">=</span> pd.read_csv(url)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>To confirm that we have actually obtained the data the we are expecting, we can display the shape (number of rows and columns) of the data frame in the notebook. Note that the final expression in any Jupyter notebook cell is automatically printed, but you can force other expressions to be printed by using the ‘<code>print</code>’ function, e.g.&nbsp;‘<code>print(da.shape)</code>’.</p>
+<p>Based on what we see below, the data set being read here has 5735 rows, corresponding to 5735 people in this wave of the NHANES study, and 28 columns, corresponding to 28 variables in this particular data file. Note that NHANES collects thousands of variables on each study subject, but here we are working with a reduced file that contains a limited number of variables.</p>
+<div class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>da.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<pre><code>(5735, 28)</code></pre>
+</div>
+</div>
+</section>
+<section id="exploring-the-contents-of-a-data-set" class="level3" data-number="6.0.3">
+<h3 data-number="6.0.3" class="anchored" data-anchor-id="exploring-the-contents-of-a-data-set"><span class="header-section-number">6.0.3</span> Exploring the contents of a data set</h3>
+<p>Pandas has a number of basic ways to understand what is in a data set. For example, above we used the ‘<code>shape</code>’ method to determine the numbers of rows and columns in a data set. The columns in a Pandas data frame have names, to see the names, use the ‘<code>columns</code>’ method:</p>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>da.columns</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<pre><code>Index(['SEQN', 'ALQ101', 'ALQ110', 'ALQ130', 'SMQ020', 'RIAGENDR', 'RIDAGEYR',
+       'RIDRETH1', 'DMDCITZN', 'DMDEDUC2', 'DMDMARTL', 'DMDHHSIZ', 'WTINT2YR',
+       'SDMVPSU', 'SDMVSTRA', 'INDFMPIR', 'BPXSY1', 'BPXDI1', 'BPXSY2',
+       'BPXDI2', 'BMXWT', 'BMXHT', 'BMXBMI', 'BMXLEG', 'BMXARML', 'BMXARMC',
+       'BMXWAIST', 'HIQ210'],
+      dtype='object')</code></pre>
+</div>
+</div>
+<p>These names correspond to variables in the NHANES study. For example, <code>SEQN</code> is a unique identifier for one person, and <code>BMXWT</code> is the subject’s weight in kilograms (“BMX” is the NHANES prefix for body measurements). The variables in the NHANES data set are documented in a set of “codebooks” that are available on-line. The codebooks for the 2015-2016 wave of NHANES can be found by following the links at the following page:</p>
+<p>https://wwwn.cdc.gov/nchs/nhanes/continuousnhanes/default.aspx?BeginYear=2015</p>
+<p>For convenience, direct links to some of the code books are included below:</p>
+<ul>
+<li><p><a href="https://wwwn.cdc.gov/Nchs/Nhanes/2015-2016/DEMO_I.htm">Demographics code book</a></p></li>
+<li><p><a href="https://wwwn.cdc.gov/Nchs/Nhanes/2015-2016/BMX_I.htm">Body measures code book</a></p></li>
+<li><p><a href="https://wwwn.cdc.gov/Nchs/Nhanes/2015-2016/BPX_I.htm">Blood pressure code book</a></p></li>
+<li><p><a href="https://wwwn.cdc.gov/Nchs/Nhanes/2015-2016/ALQ_I.htm">Alcohol questionaire code book</a></p></li>
+<li><p><a href="https://wwwn.cdc.gov/Nchs/Nhanes/2015-2016/SMQ_I.htm">Smoking questionaire code book</a></p></li>
+</ul>
+<p>Every variable in a Pandas data frame has a data type. There are many different data types, but most commonly you will encounter floating point values (real numbers), integers, strings (text), and date/time values. When Pandas reads a text/csv file, it guesses the data types based on what it sees in the first few rows of the data file. Usually it selects an appropriate type, but occasionally it does not. To confirm that the data types are consistent with what the variables represent, inspect the ‘<code>dtypes</code>’ attribute of the data frame.</p>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>da.dtypes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<pre><code>SEQN          int64
+ALQ101      float64
+ALQ110      float64
+ALQ130      float64
+SMQ020        int64
+RIAGENDR      int64
+RIDAGEYR      int64
+RIDRETH1      int64
+DMDCITZN    float64
+DMDEDUC2    float64
+DMDMARTL    float64
+DMDHHSIZ      int64
+WTINT2YR    float64
+SDMVPSU       int64
+SDMVSTRA      int64
+INDFMPIR    float64
+BPXSY1      float64
+BPXDI1      float64
+BPXSY2      float64
+BPXDI2      float64
+BMXWT       float64
+BMXHT       float64
+BMXBMI      float64
+BMXLEG      float64
+BMXARML     float64
+BMXARMC     float64
+BMXWAIST    float64
+HIQ210      float64
+dtype: object</code></pre>
+</div>
+</div>
+<p>As we see here, most of the variables have floating point or integer data type. Unlike many data sets, NHANES does not use any text values in its data. For example, while many datasets would use text labels like “F” or “M” to denote a subject’s gender, this information is represented in NHANES with integer codes. The actual meanings of these codes can be determined from the codebooks. For example, the variable <code>RIAGENDR</code> contains each subject’s gender, with male gender coded as <code>1</code> and female gender coded as <code>2</code>. The <code>RIAGENDR</code> variable is part of the demographics component of NHANES, so this coding can be found in the demographics codebook.</p>
+<p>Variables like <code>BMXWT</code> which represent a quantitative measurement will typically be stored as floating point data values.</p>
+</section>
+<section id="slicing-a-data-set" class="level3" data-number="6.0.4">
+<h3 data-number="6.0.4" class="anchored" data-anchor-id="slicing-a-data-set"><span class="header-section-number">6.0.4</span> Slicing a data set</h3>
+<p>As discussed above, a Pandas data frame is a rectangular data table, in which the rows represent cases and the columns represent variables. One common manipulation of a data frame is to extract the data for one case or for one variable. There are several ways to do this, as shown below.</p>
+<p>To extract all the values for one variable, the following three approaches are equivalent (“DMDEDUC2” here is an NHANES variable containing a person’s educational attainment). In these four lines of code, we are assigning the data from one column of the data frame <code>da</code> into new variables <code>w</code>, <code>x</code>, <code>y</code>, and <code>z</code>. The first three approaches access the variable by name. The fourth approach accesses the variable by position (note that <code>DMDEDUC2</code> is in position 9 of the <code>da.columns</code> array shown above – remember that Python counts starting at position zero).</p>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>w <span class="op">=</span> da[<span class="st">"DMDEDUC2"</span>]</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> da.loc[:, <span class="st">"DMDEDUC2"</span>]</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> da.DMDEDUC2</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>z <span class="op">=</span> da.iloc[:, <span class="dv">9</span>]  <span class="co"># DMDEDUC2 is in column 9</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Another reason to slice a variable out of a data frame is so that we can then pass it into a function. For example, we can find the maximum value over all <code>DMDEDUC2</code> values using any one of the following four lines of code:</p>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(da[<span class="st">"DMDEDUC2"</span>].<span class="bu">max</span>())</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(da.loc[:, <span class="st">"DMDEDUC2"</span>].<span class="bu">max</span>())</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(da.DMDEDUC2.<span class="bu">max</span>())</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(da.iloc[:, <span class="dv">9</span>].<span class="bu">max</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>9.0
+9.0
+9.0
+9.0</code></pre>
+</div>
+</div>
+<p>Every value in a Python program has a type, and the type information can be obtained using Python’s ‘<code>type</code>’ function. This can be useful, for example, if you are looking for the documentation associated with some value, but you do not know what the value’s type is.</p>
+<p>Here we see that the variable <code>da</code> has type ‘DataFrame’, while one column of <code>da</code> has type ‘Series’. As noted above, a Series is a Pandas data structure for holding a single column (or row) of data.</p>
+<div class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">type</span>(da)) <span class="co"># The type of the variable</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">type</span>(da.DMDEDUC2)) <span class="co"># The type of one column of the data frame</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">type</span>(da.iloc[<span class="dv">2</span>,:])) <span class="co"># The type of one row of the data frame</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
+&lt;class 'pandas.core.series.Series'&gt;
+&lt;class 'pandas.core.series.Series'&gt;</code></pre>
+</div>
+</div>
+<p>It may also be useful to slice a row (case) out of a data frame. Just as a data frame’s columns have names, the rows also have names, which are called the “index”. However many data sets do not have meaningful row names, so it is more common to extract a row of a data frame using its position. The <code>iloc</code> method slices rows or columns from a data frame by position (counting from 0). The following line of code extracts row 3 from the data set (which is the fourth row, counting from zero).</p>
+<div class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> da.iloc[<span class="dv">3</span>, :]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Another important data frame manipulation is to extract a contiguous block of rows or columns from the data set. Below we slice by position, in the first case taking row positions 3 and 4 (counting from 0, which are rows 4 and 5 counting from 1), and in the second case taking columns 2, 3, and 4 (columns 3, 4, 5 if counting from 1).</p>
+<div class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> da.iloc[<span class="dv">3</span>:<span class="dv">5</span>, :]</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> da.iloc[:, <span class="dv">2</span>:<span class="dv">5</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="missing-values" class="level3" data-number="6.0.5">
+<h3 data-number="6.0.5" class="anchored" data-anchor-id="missing-values"><span class="header-section-number">6.0.5</span> Missing values</h3>
+<p>When reading a dataset using Pandas, there is a set of values including ‘NA’, ‘NULL’, and ‘NaN’ that are taken by default to represent a missing value. The full list of default missing value codes is in the ‘<code>read_csv</code>’ documentation <a href="https://pandas.pydata.org/pandas-docs/stable/generated/pandas.read_csv.html">here</a>. This document also explains how to change the way that ‘<code>read_csv</code>’ decides whether a variable’s value is missing.</p>
+<p>Pandas has functions called <code>isnull</code> and <code>notnull</code> that can be used to identify where the missing and non-missing values are located in a data frame. Below we use these functions to count the number of missing and non-missing <code>DMDEDUC2</code> values.</p>
+<div class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pd.isnull(da.DMDEDUC2).<span class="bu">sum</span>())</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pd.notnull(da.DMDEDUC2).<span class="bu">sum</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>261
+5474</code></pre>
+</div>
+</div>
+<p>As an aside, note that there may be a variety of distinct forms of missingness in a variable, and in some cases it is important to keep these values distinct. For example, in case of the DMDEDUC2 variable, in addition to the blank or NA values that Pandas considers to be missing, three people responded “don’t know” (code value 9). In many analyses, the “don’t know” values will also be treated as missing, but at this point we are considering “don’t know” to be a distinct category of observed response.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../code/4_libraries_data_management.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Python Libraries</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../code/6_week1_python_resources.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Python Resources</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>
