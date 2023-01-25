@@ -18,6 +18,11 @@ book:
     - code/8_Tables_Histograms_and_Boxplots_in_Python.ipynb
     - code/9_nhanes_univariate_analyses.ipynb
     - code/10_nhanes_univariate_practice.ipynb
+    - code/11_Multivariate_Data_Selection.ipynb
+    - code/12_Multivariate_Distributions.ipynb
+    - code/13_Unit_Testing.ipynb
+    - code/14_nhanes_multivariate_analyses.ipynb
+    - code/15_nhanes_multivariate_practice.ipynb
 
 format:
   html:

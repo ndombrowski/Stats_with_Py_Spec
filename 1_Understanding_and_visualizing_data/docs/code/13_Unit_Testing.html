@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.1.251">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Understanding and Visualizing Data with Python - 14&nbsp; Unit Testing</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../code/14_nhanes_multivariate_analyses.html" rel="next">
+<link href="../code/12_Multivariate_Distributions.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+</head>
+
+<body class="nav-sidebar floating">
+
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Unit Testing</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Understanding and Visualizing Data with Python</a> 
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">index.html</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/1_intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Lecture notes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/2_introduction_jupyter.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">What is Jupyter Notebooks?</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/3_data_types.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Data Types in Python</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/4_libraries_data_management.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Python Libraries</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/5_nhanes_data_basics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Using Python to read data files and explore their contents</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/6_week1_python_resources.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Python Resources</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/7_python_libraries.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Python Libraries</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/8_Tables_Histograms_and_Boxplots_in_Python.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Visualizing Data in Python</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/9_nhanes_univariate_analyses.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Univariate data analyses - NHANES case study</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/10_nhanes_univariate_practice.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Practice notebook for univariate analysis using NHANES data</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/11_Multivariate_Data_Selection.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">How to select dataframe subsets from multivariate data</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/12_Multivariate_Distributions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Plot Multivariate Distributions in Python</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/13_Unit_Testing.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Unit Testing</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/14_nhanes_multivariate_analyses.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Analysis of multivariate data - NHANES case study</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/15_nhanes_multivariate_practice.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Practice notebook for multivariate analysis using NHANES data</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#goal" id="toc-goal" class="nav-link active" data-scroll-target="#goal"><span class="toc-section-number">14.0.1</span>  Goal</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Unit Testing</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<p>While we will not cover the <a href="https://docs.python.org/3/library/unittest.html">unit testing library</a> that python has, we wanted to introduce you to a simple way that you can test your code.</p>
+<p>Unit testing is important because it the only way you can be sure that your code is do what you think it is doing.</p>
+<p>Remember, just because ther are no errors does not mean your code is correct.</p>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib <span class="im">as</span> plt</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>pd.set_option(<span class="st">'display.max_columns'</span>, <span class="dv">100</span>) <span class="co"># Show all columns when looking at dataframe</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Download NHANES 2015-2016 data</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"../data/nhanes_2015_2016.csv"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>df.index <span class="op">=</span> <span class="bu">range</span>(<span class="dv">1</span>,df.shape[<span class="dv">0</span>]<span class="op">+</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>SEQN</th>
+      <th>ALQ101</th>
+      <th>ALQ110</th>
+      <th>ALQ130</th>
+      <th>SMQ020</th>
+      <th>RIAGENDR</th>
+      <th>RIDAGEYR</th>
+      <th>RIDRETH1</th>
+      <th>DMDCITZN</th>
+      <th>DMDEDUC2</th>
+      <th>DMDMARTL</th>
+      <th>DMDHHSIZ</th>
+      <th>WTINT2YR</th>
+      <th>SDMVPSU</th>
+      <th>SDMVSTRA</th>
+      <th>INDFMPIR</th>
+      <th>BPXSY1</th>
+      <th>BPXDI1</th>
+      <th>BPXSY2</th>
+      <th>BPXDI2</th>
+      <th>BMXWT</th>
+      <th>BMXHT</th>
+      <th>BMXBMI</th>
+      <th>BMXLEG</th>
+      <th>BMXARML</th>
+      <th>BMXARMC</th>
+      <th>BMXWAIST</th>
+      <th>HIQ210</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>83732</td>
+      <td>1.0</td>
+      <td>NaN</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>62</td>
+      <td>3</td>
+      <td>1.0</td>
+      <td>5.0</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>134671.37</td>
+      <td>1</td>
+      <td>125</td>
+      <td>4.39</td>
+      <td>128.0</td>
+      <td>70.0</td>
+      <td>124.0</td>
+      <td>64.0</td>
+      <td>94.8</td>
+      <td>184.5</td>
+      <td>27.8</td>
+      <td>43.3</td>
+      <td>43.6</td>
+      <td>35.9</td>
+      <td>101.1</td>
+      <td>2.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>83733</td>
+      <td>1.0</td>
+      <td>NaN</td>
+      <td>6.0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>53</td>
+      <td>3</td>
+      <td>2.0</td>
+      <td>3.0</td>
+      <td>3.0</td>
+      <td>1</td>
+      <td>24328.56</td>
+      <td>1</td>
+      <td>125</td>
+      <td>1.32</td>
+      <td>146.0</td>
+      <td>88.0</td>
+      <td>140.0</td>
+      <td>88.0</td>
+      <td>90.4</td>
+      <td>171.4</td>
+      <td>30.8</td>
+      <td>38.0</td>
+      <td>40.0</td>
+      <td>33.2</td>
+      <td>107.9</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>83734</td>
+      <td>1.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1</td>
+      <td>1</td>
+      <td>78</td>
+      <td>3</td>
+      <td>1.0</td>
+      <td>3.0</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>12400.01</td>
+      <td>1</td>
+      <td>131</td>
+      <td>1.51</td>
+      <td>138.0</td>
+      <td>46.0</td>
+      <td>132.0</td>
+      <td>44.0</td>
+      <td>83.4</td>
+      <td>170.1</td>
+      <td>28.8</td>
+      <td>35.6</td>
+      <td>37.0</td>
+      <td>31.0</td>
+      <td>116.5</td>
+      <td>2.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>83735</td>
+      <td>2.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>2</td>
+      <td>56</td>
+      <td>3</td>
+      <td>1.0</td>
+      <td>5.0</td>
+      <td>6.0</td>
+      <td>1</td>
+      <td>102718.00</td>
+      <td>1</td>
+      <td>131</td>
+      <td>5.00</td>
+      <td>132.0</td>
+      <td>72.0</td>
+      <td>134.0</td>
+      <td>68.0</td>
+      <td>109.8</td>
+      <td>160.9</td>
+      <td>42.4</td>
+      <td>38.5</td>
+      <td>37.7</td>
+      <td>38.3</td>
+      <td>110.1</td>
+      <td>2.0</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>83736</td>
+      <td>2.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>2</td>
+      <td>42</td>
+      <td>4</td>
+      <td>1.0</td>
+      <td>4.0</td>
+      <td>3.0</td>
+      <td>5</td>
+      <td>17627.67</td>
+      <td>2</td>
+      <td>126</td>
+      <td>1.23</td>
+      <td>100.0</td>
+      <td>70.0</td>
+      <td>114.0</td>
+      <td>54.0</td>
+      <td>55.2</td>
+      <td>164.9</td>
+      <td>20.3</td>
+      <td>37.4</td>
+      <td>36.0</td>
+      <td>27.2</td>
+      <td>80.4</td>
+      <td>2.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<section id="goal" class="level3" data-number="14.0.1">
+<h3 data-number="14.0.1" class="anchored" data-anchor-id="goal"><span class="header-section-number">14.0.1</span> Goal</h3>
+<p>We want to find the mean of first 100 rows of ‘BPXSY1’ when ‘RIDAGEYR’ &gt; 60</p>
+<div class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># One possible way of doing this is:</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Current version of python will include this warning, older versions will not</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#this gives an index error</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#pd.Series.mean(df[df.RIDAGEYR &gt; 60].loc[range(0,100), 'BPXSY1']) </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>df[df.RIDAGEYR <span class="op">&gt;</span> <span class="dv">60</span>][<span class="st">'BPXSY1'</span>].head(<span class="dv">100</span>).mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="16">
+<pre><code>136.29166666666666</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># test our code on only ten rows so we can easily check</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>test <span class="op">=</span> pd.DataFrame({<span class="st">'col1'</span>: np.repeat([<span class="dv">3</span>,<span class="dv">1</span>],<span class="dv">5</span>), <span class="st">'col2'</span>: <span class="bu">range</span>(<span class="dv">3</span>,<span class="dv">13</span>)}, index<span class="op">=</span><span class="bu">range</span>(<span class="dv">1</span>,<span class="dv">11</span>))</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>test</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="17">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>col1</th>
+      <th>col2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>3</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>3</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>3</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>3</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>1</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>1</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>1</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>1</td>
+      <td>11</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>1</td>
+      <td>12</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># pd.Series.mean(df[df.RIDAGEYR &gt; 60].loc[range(0,5), 'BPXSY1'])</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># should return 5</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#the code below would give the wrong number but returns an error</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#pd.Series.mean(test[test.col1 &gt; 2].loc[range(0,5), 'col2'])</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>test[test.col1 <span class="op">&gt;</span> <span class="dv">2</span>][<span class="st">'col2'</span>].head(<span class="dv">5</span>).mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="19">
+<pre><code>5.0</code></pre>
+</div>
+</div>
+<p>What went wrong?</p>
+<div class="cell" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">#test[test.col1 &gt; 2].loc[range(0,5), 'col2']</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 0 is not in the row index labels because the second row's value is &lt; 2. For now, pandas defaults to filling this</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># with NaN</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Using the .iloc method instead, we are correctly choosing the first 5 rows, regardless of their row labels</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>test[test.col1 <span class="op">&gt;</span><span class="dv">2</span>].iloc[<span class="bu">range</span>(<span class="dv">0</span>,<span class="dv">5</span>), <span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="22">
+<pre><code>1    3
+2    4
+3    5
+4    6
+5    7
+Name: col2, dtype: int64</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="23">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>pd.Series.mean(test[test.col1 <span class="op">&gt;</span><span class="dv">2</span>].iloc[<span class="bu">range</span>(<span class="dv">0</span>,<span class="dv">5</span>), <span class="dv">1</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="23">
+<pre><code>5.0</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="25">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># We can compare what our real dataframe looks like with the incorrect and correct methods</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co">#Filled with NaN whenever a row label does not meet the condition</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co">#df[df.RIDAGEYR &gt; 60].loc[range(0,5), :] # </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="26">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">#This Correctly picks the first fice rows such that 'RIDAGEYR" &gt; 60</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>df[df.RIDAGEYR <span class="op">&gt;</span> <span class="dv">60</span>].iloc[<span class="bu">range</span>(<span class="dv">0</span>,<span class="dv">5</span>), :] </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="26">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>SEQN</th>
+      <th>ALQ101</th>
+      <th>ALQ110</th>
+      <th>ALQ130</th>
+      <th>SMQ020</th>
+      <th>RIAGENDR</th>
+      <th>RIDAGEYR</th>
+      <th>RIDRETH1</th>
+      <th>DMDCITZN</th>
+      <th>DMDEDUC2</th>
+      <th>DMDMARTL</th>
+      <th>DMDHHSIZ</th>
+      <th>WTINT2YR</th>
+      <th>SDMVPSU</th>
+      <th>SDMVSTRA</th>
+      <th>INDFMPIR</th>
+      <th>BPXSY1</th>
+      <th>BPXDI1</th>
+      <th>BPXSY2</th>
+      <th>BPXDI2</th>
+      <th>BMXWT</th>
+      <th>BMXHT</th>
+      <th>BMXBMI</th>
+      <th>BMXLEG</th>
+      <th>BMXARML</th>
+      <th>BMXARMC</th>
+      <th>BMXWAIST</th>
+      <th>HIQ210</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>83732</td>
+      <td>1.0</td>
+      <td>NaN</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>62</td>
+      <td>3</td>
+      <td>1.0</td>
+      <td>5.0</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>134671.37</td>
+      <td>1</td>
+      <td>125</td>
+      <td>4.39</td>
+      <td>128.0</td>
+      <td>70.0</td>
+      <td>124.0</td>
+      <td>64.0</td>
+      <td>94.8</td>
+      <td>184.5</td>
+      <td>27.8</td>
+      <td>43.3</td>
+      <td>43.6</td>
+      <td>35.9</td>
+      <td>101.1</td>
+      <td>2.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>83734</td>
+      <td>1.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1</td>
+      <td>1</td>
+      <td>78</td>
+      <td>3</td>
+      <td>1.0</td>
+      <td>3.0</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>12400.01</td>
+      <td>1</td>
+      <td>131</td>
+      <td>1.51</td>
+      <td>138.0</td>
+      <td>46.0</td>
+      <td>132.0</td>
+      <td>44.0</td>
+      <td>83.4</td>
+      <td>170.1</td>
+      <td>28.8</td>
+      <td>35.6</td>
+      <td>37.0</td>
+      <td>31.0</td>
+      <td>116.5</td>
+      <td>2.0</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>83737</td>
+      <td>2.0</td>
+      <td>2.0</td>
+      <td>NaN</td>
+      <td>2</td>
+      <td>2</td>
+      <td>72</td>
+      <td>1</td>
+      <td>2.0</td>
+      <td>2.0</td>
+      <td>4.0</td>
+      <td>5</td>
+      <td>11252.31</td>
+      <td>1</td>
+      <td>128</td>
+      <td>2.82</td>
+      <td>116.0</td>
+      <td>58.0</td>
+      <td>122.0</td>
+      <td>58.0</td>
+      <td>64.4</td>
+      <td>150.0</td>
+      <td>28.6</td>
+      <td>34.4</td>
+      <td>33.5</td>
+      <td>31.4</td>
+      <td>92.9</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>83754</td>
+      <td>2.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>2</td>
+      <td>67</td>
+      <td>2</td>
+      <td>1.0</td>
+      <td>5.0</td>
+      <td>1.0</td>
+      <td>7</td>
+      <td>10495.87</td>
+      <td>1</td>
+      <td>128</td>
+      <td>0.89</td>
+      <td>124.0</td>
+      <td>76.0</td>
+      <td>116.0</td>
+      <td>64.0</td>
+      <td>117.8</td>
+      <td>164.1</td>
+      <td>43.7</td>
+      <td>34.8</td>
+      <td>38.6</td>
+      <td>42.7</td>
+      <td>123.0</td>
+      <td>2.0</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>83755</td>
+      <td>1.0</td>
+      <td>NaN</td>
+      <td>3.0</td>
+      <td>2</td>
+      <td>1</td>
+      <td>67</td>
+      <td>4</td>
+      <td>1.0</td>
+      <td>5.0</td>
+      <td>2.0</td>
+      <td>1</td>
+      <td>14080.10</td>
+      <td>1</td>
+      <td>126</td>
+      <td>2.04</td>
+      <td>132.0</td>
+      <td>84.0</td>
+      <td>136.0</td>
+      <td>82.0</td>
+      <td>97.4</td>
+      <td>183.8</td>
+      <td>28.8</td>
+      <td>42.5</td>
+      <td>40.6</td>
+      <td>34.2</td>
+      <td>106.3</td>
+      <td>2.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="27">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Applying the correct method to the original question about BPXSY1</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pd.Series.mean(df[df.RIDAGEYR <span class="op">&gt;</span> <span class="dv">60</span>].iloc[<span class="bu">range</span>(<span class="dv">0</span>,<span class="dv">100</span>), <span class="dv">16</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>136.29166666666666</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="29">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Another way to reference the BPXSY1 variable</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pd.Series.mean(df[df.RIDAGEYR <span class="op">&gt;</span> <span class="dv">60</span>].iloc[<span class="bu">range</span>(<span class="dv">0</span>,<span class="dv">100</span>), df.columns.get_loc(<span class="st">'BPXSY1'</span>)]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>136.29166666666666</code></pre>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../code/12_Multivariate_Distributions.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Plot Multivariate Distributions in Python</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../code/14_nhanes_multivariate_analyses.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Analysis of multivariate data - NHANES case study</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

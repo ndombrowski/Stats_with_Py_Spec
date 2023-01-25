@@ -61,6 +61,7 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 </head>
 
@@ -149,6 +150,31 @@ ul.task-list li input[type="checkbox"] {
   <a href="../code/10_nhanes_univariate_practice.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Practice notebook for univariate analysis using NHANES data</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/11_Multivariate_Data_Selection.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">How to select dataframe subsets from multivariate data</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/12_Multivariate_Distributions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Plot Multivariate Distributions in Python</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/13_Unit_Testing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Unit Testing</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/14_nhanes_multivariate_analyses.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Analysis of multivariate data - NHANES case study</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/15_nhanes_multivariate_practice.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Practice notebook for multivariate analysis using NHANES data</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -160,6 +186,18 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#definitions" id="toc-definitions" class="nav-link active" data-scroll-target="#definitions"><span class="toc-section-number">2.1</span>  Definitions</a></li>
   <li><a href="#standard-score-empirical-rule" id="toc-standard-score-empirical-rule" class="nav-link" data-scroll-target="#standard-score-empirical-rule"><span class="toc-section-number">2.2</span>  Standard Score (Empirical Rule)</a></li>
+  <li><a href="#multivariate-data" id="toc-multivariate-data" class="nav-link" data-scroll-target="#multivariate-data"><span class="toc-section-number">2.3</span>  Multivariate data</a>
+  <ul class="collapse">
+  <li><a href="#scatter-plots" id="toc-scatter-plots" class="nav-link" data-scroll-target="#scatter-plots"><span class="toc-section-number">2.3.1</span>  Scatter plots</a></li>
+  <li><a href="#outliers" id="toc-outliers" class="nav-link" data-scroll-target="#outliers"><span class="toc-section-number">2.3.2</span>  Outliers</a></li>
+  </ul></li>
+  <li><a href="#simpsons-paradox" id="toc-simpsons-paradox" class="nav-link" data-scroll-target="#simpsons-paradox"><span class="toc-section-number">2.4</span>  Simpson’s Paradox</a></li>
+  <li><a href="#populations-and-samples" id="toc-populations-and-samples" class="nav-link" data-scroll-target="#populations-and-samples"><span class="toc-section-number">2.5</span>  Populations and samples</a>
+  <ul class="collapse">
+  <li><a href="#sampling-from-populations-intro" id="toc-sampling-from-populations-intro" class="nav-link" data-scroll-target="#sampling-from-populations-intro"><span class="toc-section-number">2.5.1</span>  Sampling from populations intro</a></li>
+  <li><a href="#simple-random-sampling-srs" id="toc-simple-random-sampling-srs" class="nav-link" data-scroll-target="#simple-random-sampling-srs"><span class="toc-section-number">2.5.2</span>  Simple random sampling (SRS)</a></li>
+  <li><a href="#working-with-complex-samples" id="toc-working-with-complex-samples" class="nav-link" data-scroll-target="#working-with-complex-samples"><span class="toc-section-number">2.5.3</span>  Working with complex samples</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -189,6 +227,7 @@ ul.task-list li input[type="checkbox"] {
 <li><p>The <strong>mean (average)</strong> of a data set is found by adding all numbers in the data set and then dividing by the number of values in the set. Its highly affected by outliers.</p></li>
 <li><p>The <strong>median</strong> is the middle value when a data set is ordered from least to greatest.</p></li>
 <li><p>The mode is the number that occurs most often in a data set.</p></li>
+<li><p>I.i.d. data = Independent and identically distributed data. Here each random variable has the same probability distribution as the others and all are mutually independent</p></li>
 <li><p><strong>Range</strong>: the difference between the highest and lowest values.</p></li>
 <li><p><strong>Interquartile range</strong>: the range of the middle half of a distribution. Q3-Q3</p></li>
 <li><p><strong>Standard deviation</strong>: average distance from the mean.</p></li>
@@ -196,10 +235,106 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="standard-score-empirical-rule" class="level2" data-number="2.2">
 <h2 data-number="2.2" class="anchored" data-anchor-id="standard-score-empirical-rule"><span class="header-section-number">2.2</span> Standard Score (Empirical Rule)</h2>
-<p>A bell-shaped or normal distributions is sometimes referred to as the 68-95-99.7 rule: 68% of the population is within 1 standard deviation of the mean. 95% of the population is within 2 standard deviation of the mean. 99.7% of the population is within 3 standard deviation of the mean.</p>
+<p>In statistics, the <strong>standard score</strong> is the number of standard deviations by which the value of a raw score (i.e., an observed value or data point) is above or below the mean value of what is being observed or measured.</p>
+<p>It is calculated by subtracting the population mean from an individual raw score and then dividing the difference by the population standard deviation.</p>
+<p>Standard scores are most commonly called <strong>z-scores</strong>.</p>
+<p>A bell-shaped or normal distributions is sometimes referred to as the <strong>68-95-99.7 rule</strong>: 68% of the observations are within 1 standard deviation of the mean. 95% of the observations are within 2 standard deviation of the mean. 99.7% of the observations are within 3 standard deviation of the mean.</p>
 <p><img width="600" src="../img/Normal-Distribution.png"></p>
+</section>
+<section id="multivariate-data" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="multivariate-data"><span class="header-section-number">2.3</span> Multivariate data</h2>
+<p>Univariate statistics summarize only one variable at a time. Bivariate statistics compare two variables. Multivariate statistics compare more than two variables.</p>
+<p>A <strong>mosaic plot</strong> is a special type of stacked bar chart that shows percentages of data in groups. The plot is a graphical representation of a contingency table. These plots are a way to display qualitative multivariate data.</p>
+<section id="scatter-plots" class="level3" data-number="2.3.1">
+<h3 data-number="2.3.1" class="anchored" data-anchor-id="scatter-plots"><span class="header-section-number">2.3.1</span> Scatter plots</h3>
+<p>Scatter plots are a good way to display multivariate quantitative data</p>
+<p>Looking at association in scatter plots:</p>
+<ul>
+<li>Linear: The pattern in a plot is a line</li>
+<li>Quadratic association: The pattern is parabolic, i.e.&nbsp;the pattern goes up at the beginning and goes back down latter</li>
+<li>No association: there is no pattern</li>
+</ul>
+<p>Looking at the direction of the association:</p>
+<ul>
+<li>Positive linear association: the pattern has a positive slope, i.e.&nbsp;when x increases, y decreases</li>
+<li>Negative linear association</li>
+</ul>
+<p>Looking at the strength of the association:</p>
+<ul>
+<li>Weak linear association: the points are largely scattered along the line</li>
+<li>Moderate linear association: Partial scattering of points</li>
+<li>Strong linear association: Points are minimally scattered</li>
+</ul>
+<p>Quantify the strength and direction via <strong>correlation</strong>:</p>
+<p><strong>Pearson correlation (R or p)</strong>: number between -1 and 1 that indicates the strength and direction of association between two variables. The sign of the correlation indicates the direction, i.e.&nbsp;negative –&gt; negative linear association. The closer the number is to 1 or -1 the stronger the association is.</p>
+<p>One caveat with correlations: Correlation does NOT imply causation. I.e. age might not be the reason to why blood pressure is increasing even though we might see a positive correlation.</p>
+</section>
+<section id="outliers" class="level3" data-number="2.3.2">
+<h3 data-number="2.3.2" class="anchored" data-anchor-id="outliers"><span class="header-section-number">2.3.2</span> Outliers</h3>
+<p>Outliers are extreme data points that deviate from patterns observed in the rest of the data.</p>
+</section>
+</section>
+<section id="simpsons-paradox" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="simpsons-paradox"><span class="header-section-number">2.4</span> Simpson’s Paradox</h2>
+<p>A <strong>confounding variable</strong> is an outside influence that changes the relationship between the independent and the dependent variable (ie. a third variable in a study examining a potential cause-and-effect relationship). It oftentimes works by affecting the causal relationship between the primary independent variable and the dependent variable. This confounding variable confuses the relationship between two other variables; it may act by hiding, obscuring, or enhancing the existing relationship.</p>
+<p>For example, suppose that you are interested in examining how activity level affects weight change. Other factors, like diet, age, and gender may also affect weight change and come into play when looking at the relationship between activity level and weight change. If one doesn’t control for these factors, the relationship between activity level and weight change can be distorted.</p>
+</section>
+<section id="populations-and-samples" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="populations-and-samples"><span class="header-section-number">2.5</span> Populations and samples</h2>
+<section id="sampling-from-populations-intro" class="level3" data-number="2.5.1">
+<h3 data-number="2.5.1" class="anchored" data-anchor-id="sampling-from-populations-intro"><span class="header-section-number">2.5.1</span> Sampling from populations intro</h3>
+<p><strong>How to make inferential statements about a population?</strong></p>
+<ol type="1">
+<li>Conduct a <strong>census</strong>, i.e.&nbsp;measure everyone in a population. So only doable for small populations and can get easily get expensive, so requires careful cost evaluation.</li>
+<li>Selected a <strong>probability sample from the population</strong> and measure all units in that sample. Here, we construct a list of all units in a population, i.e.&nbsp;a sampling frame and then we determine a probability of selection for every unit on that list. Then select units from that list at random where sampling rates for different subgroups are determined by the probabilities of selection. Finally, measure those randomly selected units.</li>
+<li>Select a <strong>non-probability sample</strong> from the population. This process doesn’t involve random selection of individuals, according to probability of selection, so there is no statistical basis for making inferences about the target population –&gt; high potential for bias. Examples are opt-in web surveys, quota sampling, snowball sampling or convenience sampling.</li>
+</ol>
+<p><strong>Why probability sampling?</strong></p>
+<p>The known probabilities of selection for all units allow us to make unbiased statements about population features and the uncertainty in survey estimates. The random selection of units protects us against bias from the sample selection mechanisms –&gt; allows us to make population inferences based on sampling distributions.</p>
+</section>
+<section id="simple-random-sampling-srs" class="level3" data-number="2.5.2">
+<h3 data-number="2.5.2" class="anchored" data-anchor-id="simple-random-sampling-srs"><span class="header-section-number">2.5.2</span> Simple random sampling (SRS)</h3>
+<ul>
+<li>We start with a known list of N population units (N = size of the population) and randomly select n units from the list (n = the size of our sample)</li>
+<li>Every unit has equal probability of selection of <span class="math inline">\(n/N\)</span></li>
+<li>All possible samples of size n are equally likely</li>
+<li>Estimates of means, proportions and totals based on SRS are unbiased (i.e.&nbsp;equal to the population averages on average)</li>
+<li>Can be with replacement or without replacement
+<ul>
+<li><strong>With replacement</strong> means that when we select somebody from a larger list, we’ve replaced them in that list. And we give them a chance of being selected again in the sample.</li>
+<li>More common is that simple random sampling is done <strong>without replacement</strong>. So once an individual unit is sampled from a given list, they can’t be sampled again.</li>
+<li>For both: The probability of selection for each unit is still <span class="math inline">\(n/N\)</span></li>
+</ul></li>
+<li>Rarely used in practice: Collecting data from n randomly sampled units in a large population can be expensive</li>
+<li>Example: We have 1000 email conversations and want to check 100 manually for some things, then we can design a random nr. generator to pull out a simple, random sample from our population of emails.</li>
+</ul>
+</section>
+<section id="working-with-complex-samples" class="level3" data-number="2.5.3">
+<h3 data-number="2.5.3" class="anchored" data-anchor-id="working-with-complex-samples"><span class="header-section-number">2.5.3</span> Working with complex samples</h3>
+<p>Key features of complex samples:</p>
+<ul>
+<li>Population is divided into different <strong>strata</strong>, and part of the sample is allocated to each stratum. This ensures the a sample representation from each stratum and reduces variance of survey estimates (this technique is known as <strong>stratification</strong>)</li>
+<li><strong>Clusters</strong> of population units (e.g.&nbsp;counties) are randomly samples first (with a known probability) within strata, to save costs of data collection (i.e.&nbsp;we collect data from cases close to each other geographically for the county example)</li>
+<li><strong>Units</strong> are randomly sampled from within clusters, according to some probability of selection, and measured</li>
+</ul>
+<p>A unit’s probability of selection is determined by:</p>
+<ul>
+<li>The number of clusters sampled from each stratum</li>
+<li>The total number of clusters in the population of each stratum</li>
+<li>The number of units ultimately sampled from within each randomly selected cluster</li>
+<li>The total number of units in the population in each cluster</li>
+</ul>
+<p>An example for finding a unit’s probability of selection:</p>
+<ul>
+<li>We want to select a out of A clusters at random in a given stratum</li>
+<li>Then we select b out of B units at random from within each selected cluster</li>
+<li>The probability of selection is: <span class="math inline">\((a/A)(b/B)\)</span></li>
+</ul>
+<p><img width="500" src="../img/nhanes_ex1.png"></p>
+<p><img width="500" src="../img/nhanes_ex2.png"></p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

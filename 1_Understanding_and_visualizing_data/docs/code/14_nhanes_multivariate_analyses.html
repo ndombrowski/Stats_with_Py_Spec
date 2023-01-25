@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.1.251">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Understanding and Visualizing Data with Python - 15&nbsp; Analysis of multivariate data - NHANES case study</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../code/15_nhanes_multivariate_practice.html" rel="next">
+<link href="../code/13_Unit_Testing.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+</head>
+
+<body class="nav-sidebar floating">
+
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Analysis of multivariate data - NHANES case study</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Understanding and Visualizing Data with Python</a> 
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">index.html</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/1_intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Lecture notes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/2_introduction_jupyter.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">What is Jupyter Notebooks?</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/3_data_types.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Data Types in Python</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/4_libraries_data_management.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Python Libraries</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/5_nhanes_data_basics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Using Python to read data files and explore their contents</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/6_week1_python_resources.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Python Resources</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/7_python_libraries.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Python Libraries</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/8_Tables_Histograms_and_Boxplots_in_Python.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Visualizing Data in Python</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/9_nhanes_univariate_analyses.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Univariate data analyses - NHANES case study</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/10_nhanes_univariate_practice.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Practice notebook for univariate analysis using NHANES data</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/11_Multivariate_Data_Selection.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">How to select dataframe subsets from multivariate data</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/12_Multivariate_Distributions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Plot Multivariate Distributions in Python</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/13_Unit_Testing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Unit Testing</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/14_nhanes_multivariate_analyses.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Analysis of multivariate data - NHANES case study</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/15_nhanes_multivariate_practice.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Practice notebook for multivariate analysis using NHANES data</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#quantitative-bivariate-data" id="toc-quantitative-bivariate-data" class="nav-link active" data-scroll-target="#quantitative-bivariate-data"><span class="toc-section-number">15.0.1</span>  Quantitative bivariate data</a></li>
+  <li><a href="#heterogeneity-and-stratification" id="toc-heterogeneity-and-stratification" class="nav-link" data-scroll-target="#heterogeneity-and-stratification"><span class="toc-section-number">15.0.2</span>  Heterogeneity and stratification</a></li>
+  <li><a href="#categorical-bivariate-data" id="toc-categorical-bivariate-data" class="nav-link" data-scroll-target="#categorical-bivariate-data"><span class="toc-section-number">15.0.3</span>  Categorical bivariate data</a></li>
+  <li><a href="#create-count-table-with-pd.crosstab" id="toc-create-count-table-with-pd.crosstab" class="nav-link" data-scroll-target="#create-count-table-with-pd.crosstab"><span class="toc-section-number">15.0.4</span>  Create count table with pd.crosstab</a></li>
+  <li><a href="#mixed-categorical-and-quantitative-data" id="toc-mixed-categorical-and-quantitative-data" class="nav-link" data-scroll-target="#mixed-categorical-and-quantitative-data"><span class="toc-section-number">15.0.5</span>  Mixed categorical and quantitative data</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Analysis of multivariate data - NHANES case study</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<p>In this notebook, we illustrate several basic techniques for exploring data using methods for understanding multivariate relationships. The statistical methods discussed here will parallel the methods discussed in the multivariate methods section of the course, and build on the univariate analysis discussed earlier. As with the univariate notebook, we use here the 2015-2016 wave of the <a href="https://www.cdc.gov/nchs/nhanes/index.htm">NHANES</a> study for illustration.</p>
+<p>Many of the analyses presented in this notebook use the Matplotlib and Seaborn libraries for data visualization. These are very powerful tools that give you a vast number of options when constructing plots. We will not explain every option to every function in the examples below. You can use the <a href="https://matplotlib.org/users/index.html">Matplotlib</a> and <a href="https://seaborn.pydata.org/tutorial.html">Seaborn</a> documentation to fully understand the options, and you can experiment with these and other plots on your own to get a better sense of what can be done.</p>
+<p>We start with the usual library import statements:</p>
+<div class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>matplotlib inline</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy <span class="im">import</span> stats</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Next we load the NHANES data, just as we did for the univariate analyes.</p>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>da <span class="op">=</span> pd.read_csv(<span class="st">"../data/nhanes_2015_2016.csv"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>da.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="2">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>SEQN</th>
+      <th>ALQ101</th>
+      <th>ALQ110</th>
+      <th>ALQ130</th>
+      <th>SMQ020</th>
+      <th>RIAGENDR</th>
+      <th>RIDAGEYR</th>
+      <th>RIDRETH1</th>
+      <th>DMDCITZN</th>
+      <th>DMDEDUC2</th>
+      <th>...</th>
+      <th>BPXSY2</th>
+      <th>BPXDI2</th>
+      <th>BMXWT</th>
+      <th>BMXHT</th>
+      <th>BMXBMI</th>
+      <th>BMXLEG</th>
+      <th>BMXARML</th>
+      <th>BMXARMC</th>
+      <th>BMXWAIST</th>
+      <th>HIQ210</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>83732</td>
+      <td>1.0</td>
+      <td>NaN</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>62</td>
+      <td>3</td>
+      <td>1.0</td>
+      <td>5.0</td>
+      <td>...</td>
+      <td>124.0</td>
+      <td>64.0</td>
+      <td>94.8</td>
+      <td>184.5</td>
+      <td>27.8</td>
+      <td>43.3</td>
+      <td>43.6</td>
+      <td>35.9</td>
+      <td>101.1</td>
+      <td>2.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>83733</td>
+      <td>1.0</td>
+      <td>NaN</td>
+      <td>6.0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>53</td>
+      <td>3</td>
+      <td>2.0</td>
+      <td>3.0</td>
+      <td>...</td>
+      <td>140.0</td>
+      <td>88.0</td>
+      <td>90.4</td>
+      <td>171.4</td>
+      <td>30.8</td>
+      <td>38.0</td>
+      <td>40.0</td>
+      <td>33.2</td>
+      <td>107.9</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>83734</td>
+      <td>1.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1</td>
+      <td>1</td>
+      <td>78</td>
+      <td>3</td>
+      <td>1.0</td>
+      <td>3.0</td>
+      <td>...</td>
+      <td>132.0</td>
+      <td>44.0</td>
+      <td>83.4</td>
+      <td>170.1</td>
+      <td>28.8</td>
+      <td>35.6</td>
+      <td>37.0</td>
+      <td>31.0</td>
+      <td>116.5</td>
+      <td>2.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>83735</td>
+      <td>2.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>2</td>
+      <td>56</td>
+      <td>3</td>
+      <td>1.0</td>
+      <td>5.0</td>
+      <td>...</td>
+      <td>134.0</td>
+      <td>68.0</td>
+      <td>109.8</td>
+      <td>160.9</td>
+      <td>42.4</td>
+      <td>38.5</td>
+      <td>37.7</td>
+      <td>38.3</td>
+      <td>110.1</td>
+      <td>2.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>83736</td>
+      <td>2.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>2</td>
+      <td>42</td>
+      <td>4</td>
+      <td>1.0</td>
+      <td>4.0</td>
+      <td>...</td>
+      <td>114.0</td>
+      <td>54.0</td>
+      <td>55.2</td>
+      <td>164.9</td>
+      <td>20.3</td>
+      <td>37.4</td>
+      <td>36.0</td>
+      <td>27.2</td>
+      <td>80.4</td>
+      <td>2.0</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 28 columns</p>
+</div>
+</div>
+</div>
+<section id="quantitative-bivariate-data" class="level3" data-number="15.0.1">
+<h3 data-number="15.0.1" class="anchored" data-anchor-id="quantitative-bivariate-data"><span class="header-section-number">15.0.1</span> Quantitative bivariate data</h3>
+<p>Bivariate data arise when every “unit of analysis” (e.g.&nbsp;a person in the NHANES dataset) is assessed with respect to two traits (the NHANES subjects were assessed for many more than two traits, but we can consider two traits at a time here).</p>
+<p>A scatterplot is a very common and easily-understood visualization of quantitative bivariate data. Below we make a scatterplot of arm length against leg length. This means that arm length (<a href="https://wwwn.cdc.gov/Nchs/Nhanes/2015-2016/BMX_I.htm#BMXARML">BMXARML</a>) is plotted on the vertical axis and leg length (<a href="https://wwwn.cdc.gov/Nchs/Nhanes/2015-2016/BMX_I.htm#BMXLEG">BMXLEG</a>) is plotted on the horizontal axis). We see a positive dependence between the two measures – people with longer arms tend to have longer legs, and vice-versa. However it is far from a perfect relationship.</p>
+<p>In a scatterplot with more than around 100 points, “overplotting” becomes an issue. This means that many points fall on top of each other in the plot, which obscures relationships in the middle of the distribution and over-emphasizes the extremes. One way to mitigate overplotting is to use an “alpha” channel to make the points semi-transparent, as we have done below.</p>
+<div class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>sns.regplot(x<span class="op">=</span><span class="st">"BMXLEG"</span>, y<span class="op">=</span><span class="st">"BMXARML"</span>, data<span class="op">=</span>da, fit_reg<span class="op">=</span><span class="va">False</span>, scatter_kws<span class="op">=</span>{<span class="st">"alpha"</span>: <span class="fl">0.2</span>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<pre><code>&lt;AxesSubplot:xlabel='BMXLEG', ylabel='BMXARML'&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="14_nhanes_multivariate_analyses_files/figure-html/cell-4-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Another way to avoid overplotting is to make a plot of the “density” of points. In the plots below, darker colors indicate where a greater number of points fall. The two plot margins show the densities for the arm lengths and leg lengths separately, while the plot in the center shows their density jointly.</p>
+<p>This plot also shows the Pearson correlation coefficient between the arm length and leg length, which is 0.62. As discussed in the course, the Pearson correlation coefficient ranges from -1 to 1, with values approaching 1 indicating a more perfect positive dependence. In many settings, a correlation of 0.62 would be considered a moderately strong positive dependence.</p>
+<div class="cell" data-execution_count="37">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> sns.jointplot(x<span class="op">=</span><span class="st">"BMXLEG"</span>, y<span class="op">=</span><span class="st">"BMXARML"</span>, kind<span class="op">=</span><span class="st">'kde'</span>, fill<span class="op">=</span><span class="va">True</span>, data<span class="op">=</span>da)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>r, p <span class="op">=</span> stats.spearmanr(da[<span class="st">'BMXLEG'</span>], da[<span class="st">'BMXARML'</span>], nan_policy<span class="op">=</span><span class="st">'omit'</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>g.ax_joint.annotate(<span class="ss">f'$</span><span class="ch">\\</span><span class="ss">rho = </span><span class="sc">{</span>r<span class="sc">:.3f}</span><span class="ss">, p = </span><span class="sc">{</span>p<span class="sc">:3g}</span><span class="ss">$'</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                    xy<span class="op">=</span>(<span class="fl">0.1</span>, <span class="fl">0.9</span>), xycoords<span class="op">=</span><span class="st">'axes fraction'</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>                    ha<span class="op">=</span><span class="st">'left'</span>, va<span class="op">=</span><span class="st">'center'</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>                    bbox<span class="op">=</span>{<span class="st">'boxstyle'</span>: <span class="st">'square'</span>, <span class="st">'fc'</span>: <span class="st">'powderblue'</span>, <span class="st">'ec'</span>: <span class="st">'navy'</span>})</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="14_nhanes_multivariate_analyses_files/figure-html/cell-5-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>As another example with slightly different behavior, we see that systolic and diastolic blood pressure (essentially the maximum and minimum blood pressure between two consecutive heart beats) are more weakly correlated than arm and leg length, with a correlation coefficient of 0.32. This weaker correlation indicates that some people have unusually high systolic blood pressure but have average diastolic blood pressure, and vice versa.</p>
+<div class="cell" data-execution_count="40">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> sns.jointplot(x<span class="op">=</span><span class="st">"BPXSY1"</span>, y<span class="op">=</span><span class="st">"BPXDI1"</span>, kind<span class="op">=</span><span class="st">'kde'</span>, fill <span class="op">=</span> <span class="va">True</span>, data<span class="op">=</span>da)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>r, p <span class="op">=</span> stats.spearmanr(da[<span class="st">'BPXSY1'</span>], da[<span class="st">'BPXDI1'</span>], nan_policy<span class="op">=</span><span class="st">'omit'</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>g.ax_joint.annotate(<span class="ss">f'spearman = </span><span class="sc">{</span>r<span class="sc">:.3f}</span><span class="ss">, p = </span><span class="sc">{</span>p<span class="sc">:.3g}</span><span class="ss">'</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>                    xy<span class="op">=</span>(<span class="fl">0.1</span>, <span class="fl">0.9</span>), xycoords<span class="op">=</span><span class="st">'axes fraction'</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>                    ha<span class="op">=</span><span class="st">'left'</span>, va<span class="op">=</span><span class="st">'center'</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>                    bbox<span class="op">=</span>{<span class="st">'boxstyle'</span>: <span class="st">'round'</span>, <span class="st">'fc'</span>: <span class="st">'powderblue'</span>, <span class="st">'ec'</span>: <span class="st">'navy'</span>})</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="14_nhanes_multivariate_analyses_files/figure-html/cell-6-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Next we look at two repeated measures of systolic blood pressure, taken a few minutes apart on the same person. These values are very highly correlated, with a correlation coefficient of around 0.96.</p>
+<div class="cell" data-execution_count="42">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> sns.jointplot(x<span class="op">=</span><span class="st">"BPXSY1"</span>, y<span class="op">=</span><span class="st">"BPXSY2"</span>, kind<span class="op">=</span><span class="st">'kde'</span>, fill <span class="op">=</span> <span class="va">True</span>, data<span class="op">=</span>da)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>r, p <span class="op">=</span> stats.spearmanr(da[<span class="st">'BPXSY1'</span>], da[<span class="st">'BPXSY2'</span>], nan_policy<span class="op">=</span><span class="st">'omit'</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>g.ax_joint.annotate(<span class="ss">f'spearman = </span><span class="sc">{</span>r<span class="sc">:.3f}</span><span class="ss">, p = </span><span class="sc">{</span>p<span class="sc">:.3g}</span><span class="ss">'</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>                    xy<span class="op">=</span>(<span class="fl">0.1</span>, <span class="fl">0.9</span>), xycoords<span class="op">=</span><span class="st">'axes fraction'</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>                    ha<span class="op">=</span><span class="st">'left'</span>, va<span class="op">=</span><span class="st">'center'</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>                    bbox<span class="op">=</span>{<span class="st">'boxstyle'</span>: <span class="st">'round'</span>, <span class="st">'fc'</span>: <span class="st">'powderblue'</span>, <span class="st">'ec'</span>: <span class="st">'navy'</span>})</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="14_nhanes_multivariate_analyses_files/figure-html/cell-7-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="heterogeneity-and-stratification" class="level3" data-number="15.0.2">
+<h3 data-number="15.0.2" class="anchored" data-anchor-id="heterogeneity-and-stratification"><span class="header-section-number">15.0.2</span> Heterogeneity and stratification</h3>
+<p>Most human characteristics are complex – they vary by gender, age, ethnicity, and other factors. This type of variation is often referred to as “heterogeneity”. When such heterogeneity is present, it is usually productive to explore the data more deeply by stratifying on relevant factors, as we did in the univariate analyses.</p>
+<p>Below, we continue to probe the relationship between leg length and arm length, stratifying first by gender, then by gender and ethnicity. The gender-stratified plot indicates that men tend to have somewhat longer arms and legs than women – this is reflected in the fact that the cloud of points on the left is shifted slightly up and to the right relative to the cloud of points on the right. In addition, the correlation between arm length and leg length appears to be somewhat weaker in women than in men.</p>
+<div class="cell" data-execution_count="43">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>da[<span class="st">"RIAGENDRx"</span>] <span class="op">=</span> da.RIAGENDR.replace({<span class="dv">1</span>: <span class="st">"Male"</span>, <span class="dv">2</span>: <span class="st">"Female"</span>}) </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>sns.FacetGrid(da, col<span class="op">=</span><span class="st">"RIAGENDRx"</span>).<span class="bu">map</span>(plt.scatter, <span class="st">"BMXLEG"</span>, <span class="st">"BMXARML"</span>, alpha<span class="op">=</span><span class="fl">0.4</span>).add_legend()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="43">
+<pre><code>&lt;seaborn.axisgrid.FacetGrid at 0x7fd4f55a0710&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="14_nhanes_multivariate_analyses_files/figure-html/cell-8-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Consistent with the scatterplot, a slightly weaker correlation between arm length and leg length in women (compared to men) can be seen by calculating the correlation coefficient separately within each gender.</p>
+<p>The ‘<code>corr</code>’ method of a dataframe calculates the correlation coefficients for every pair of variables in the dataframe. This method returns a “correlation matrix”, which is a table containing the correlations between every pair of variables in the data set. Note that the diagonal of a correlation matrix always contains 1’s, since a variable always has correlation 1 with itself. The correlation matrix is also symmetric around this diagonal, since the correlation between two variables ‘<code>X</code>’ and ‘<code>Y</code>’ does not depend on the order in which we consider the two variables.</p>
+<p>In the results below, we see that the correlation between leg length and arm length in men is 0.50, while in women the correlation is 0.43.</p>
+<div class="cell" data-execution_count="50">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(da.loc[da.RIAGENDRx<span class="op">==</span><span class="st">"Female"</span>, [<span class="st">"BMXLEG"</span>, <span class="st">"BMXARML"</span>]].dropna().corr())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           BMXLEG   BMXARML
+BMXLEG   1.000000  0.434703
+BMXARML  0.434703  1.000000</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="51">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(da.loc[da.RIAGENDRx<span class="op">==</span><span class="st">"Male"</span>, [<span class="st">"BMXLEG"</span>, <span class="st">"BMXARML"</span>]].dropna().corr())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           BMXLEG   BMXARML
+BMXLEG   1.000000  0.505426
+BMXARML  0.505426  1.000000</code></pre>
+</div>
+</div>
+<p>Next we look to stratifying the data by both gender and ethnicity. This results in 2 x 5 = 10 total strata, since there are 2 gender strata and 5 ethnicity strata. These scatterplots reveal differences in the means as well a diffrences in the degree of association (correlation) between different pairs of variables. We see that although some ethnic groups tend to have longer/shorter arms and legs than others, the relationship between arm length and leg length within genders is roughly similar across the ethnic groups.</p>
+<p>One notable observation is that ethnic group 5, which consists of people who report being multi-racial or are of any race not treated as a separate group (due to small sample size), the correlation between arm length and leg length is stronger, especially for men. This is not surprising, as greater heterogeneity can allow correlations to emerge that are indiscernible in more homogeneous data.</p>
+<div class="cell" data-execution_count="53">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>_ <span class="op">=</span> sns.FacetGrid(da, col<span class="op">=</span><span class="st">"RIDRETH1"</span>,  row<span class="op">=</span><span class="st">"RIAGENDRx"</span>).<span class="bu">map</span>(plt.scatter, <span class="st">"BMXLEG"</span>, <span class="st">"BMXARML"</span>, alpha<span class="op">=</span><span class="fl">0.5</span>).add_legend()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="14_nhanes_multivariate_analyses_files/figure-html/cell-12-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="categorical-bivariate-data" class="level3" data-number="15.0.3">
+<h3 data-number="15.0.3" class="anchored" data-anchor-id="categorical-bivariate-data"><span class="header-section-number">15.0.3</span> Categorical bivariate data</h3>
+<p>In this section we discuss some methods for working with bivariate data that are categorical. We can start with a contingency table, which counts the number of people having each combination of two factors. To illustrate, we will consider the NHANES variables for marital status and education level.</p>
+<p>First, we create new versions of these two variables using text labels instead of numbers to represent the categories. We also create a new data set that omits people who responded “Don’t know” or who refused to answer these questions.</p>
+<div class="cell" data-execution_count="54">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">#CLEAN up df</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>da[<span class="st">"DMDEDUC2x"</span>] <span class="op">=</span> da.DMDEDUC2.replace({<span class="dv">1</span>: <span class="st">"&lt;9"</span>, <span class="dv">2</span>: <span class="st">"9-11"</span>, <span class="dv">3</span>: <span class="st">"HS/GED"</span>, <span class="dv">4</span>: <span class="st">"Some college/AA"</span>, <span class="dv">5</span>: <span class="st">"College"</span>, </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>                                       <span class="dv">7</span>: <span class="st">"Refused"</span>, <span class="dv">9</span>: <span class="st">"Don't know"</span>})</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>da[<span class="st">"DMDMARTLx"</span>] <span class="op">=</span> da.DMDMARTL.replace({<span class="dv">1</span>: <span class="st">"Married"</span>, <span class="dv">2</span>: <span class="st">"Widowed"</span>, <span class="dv">3</span>: <span class="st">"Divorced"</span>, <span class="dv">4</span>: <span class="st">"Separated"</span>, <span class="dv">5</span>: <span class="st">"Never married"</span>,</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>                                      <span class="dv">6</span>: <span class="st">"Living w/partner"</span>, <span class="dv">77</span>: <span class="st">"Refused"</span>})</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>db <span class="op">=</span> da.loc[(da.DMDEDUC2x <span class="op">!=</span> <span class="st">"Don't know"</span>) <span class="op">&amp;</span> (da.DMDMARTLx <span class="op">!=</span> <span class="st">"Refused"</span>), :]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="create-count-table-with-pd.crosstab" class="level3" data-number="15.0.4">
+<h3 data-number="15.0.4" class="anchored" data-anchor-id="create-count-table-with-pd.crosstab"><span class="header-section-number">15.0.4</span> Create count table with pd.crosstab</h3>
+<p>Now we can create a contingency table, counting the number of people in each cell defined by a combination of education and marital status.</p>
+<div class="cell" data-execution_count="55">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> pd.crosstab(db.DMDEDUC2x, da.DMDMARTLx)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="55">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th>DMDMARTLx</th>
+      <th>Divorced</th>
+      <th>Living w/partner</th>
+      <th>Married</th>
+      <th>Never married</th>
+      <th>Separated</th>
+      <th>Widowed</th>
+    </tr>
+    <tr>
+      <th>DMDEDUC2x</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>9-11</th>
+      <td>62</td>
+      <td>80</td>
+      <td>305</td>
+      <td>117</td>
+      <td>39</td>
+      <td>40</td>
+    </tr>
+    <tr>
+      <th>&lt;9</th>
+      <td>52</td>
+      <td>66</td>
+      <td>341</td>
+      <td>65</td>
+      <td>43</td>
+      <td>88</td>
+    </tr>
+    <tr>
+      <th>College</th>
+      <td>120</td>
+      <td>85</td>
+      <td>827</td>
+      <td>253</td>
+      <td>22</td>
+      <td>59</td>
+    </tr>
+    <tr>
+      <th>HS/GED</th>
+      <td>127</td>
+      <td>133</td>
+      <td>550</td>
+      <td>237</td>
+      <td>40</td>
+      <td>99</td>
+    </tr>
+    <tr>
+      <th>Some college/AA</th>
+      <td>217</td>
+      <td>163</td>
+      <td>757</td>
+      <td>332</td>
+      <td>42</td>
+      <td>108</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<p>The results will be easier to interpret if we normalize the data. A contingency table can be normalized in three ways – we can make the rows sum to 1, the columns sum to 1, or the whole table sum to 1. Below we normalize within rows. This gives us the proportion of people in each educational attainment category who fall into each group of the marital status variable.</p>
+<p>The modal (most common) marital status for people within each educational attainment group is “married”. However quantitatively, the proportion of people who are married varies substantially, and is notably higher for college graduates (around 61%) compared to groups with lower educational attainment.</p>
+<div class="cell" data-execution_count="56">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>x.<span class="bu">apply</span>(<span class="kw">lambda</span> z: z<span class="op">/</span>z.<span class="bu">sum</span>() <span class="op">*</span> <span class="dv">100</span>, axis<span class="op">=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="56">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th>DMDMARTLx</th>
+      <th>Divorced</th>
+      <th>Living w/partner</th>
+      <th>Married</th>
+      <th>Never married</th>
+      <th>Separated</th>
+      <th>Widowed</th>
+    </tr>
+    <tr>
+      <th>DMDEDUC2x</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>9-11</th>
+      <td>9.642302</td>
+      <td>12.441680</td>
+      <td>47.433904</td>
+      <td>18.195956</td>
+      <td>6.065319</td>
+      <td>6.220840</td>
+    </tr>
+    <tr>
+      <th>&lt;9</th>
+      <td>7.938931</td>
+      <td>10.076336</td>
+      <td>52.061069</td>
+      <td>9.923664</td>
+      <td>6.564885</td>
+      <td>13.435115</td>
+    </tr>
+    <tr>
+      <th>College</th>
+      <td>8.784773</td>
+      <td>6.222548</td>
+      <td>60.541728</td>
+      <td>18.521230</td>
+      <td>1.610542</td>
+      <td>4.319180</td>
+    </tr>
+    <tr>
+      <th>HS/GED</th>
+      <td>10.708263</td>
+      <td>11.214165</td>
+      <td>46.374368</td>
+      <td>19.983137</td>
+      <td>3.372681</td>
+      <td>8.347386</td>
+    </tr>
+    <tr>
+      <th>Some college/AA</th>
+      <td>13.403335</td>
+      <td>10.067943</td>
+      <td>46.757258</td>
+      <td>20.506485</td>
+      <td>2.594194</td>
+      <td>6.670784</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<p>We can also normalize within the columns instead of normalizing within the rows. This gives us the proportion of people with each marital status group who have each level of educational attainment.</p>
+<div class="cell" data-execution_count="57">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>x.<span class="bu">apply</span>(<span class="kw">lambda</span> z: z<span class="op">/</span>z.<span class="bu">sum</span>() <span class="op">*</span> <span class="dv">100</span>, axis<span class="op">=</span><span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="57">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th>DMDMARTLx</th>
+      <th>Divorced</th>
+      <th>Living w/partner</th>
+      <th>Married</th>
+      <th>Never married</th>
+      <th>Separated</th>
+      <th>Widowed</th>
+    </tr>
+    <tr>
+      <th>DMDEDUC2x</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>9-11</th>
+      <td>10.726644</td>
+      <td>15.180266</td>
+      <td>10.971223</td>
+      <td>11.653386</td>
+      <td>20.967742</td>
+      <td>10.152284</td>
+    </tr>
+    <tr>
+      <th>&lt;9</th>
+      <td>8.996540</td>
+      <td>12.523719</td>
+      <td>12.266187</td>
+      <td>6.474104</td>
+      <td>23.118280</td>
+      <td>22.335025</td>
+    </tr>
+    <tr>
+      <th>College</th>
+      <td>20.761246</td>
+      <td>16.129032</td>
+      <td>29.748201</td>
+      <td>25.199203</td>
+      <td>11.827957</td>
+      <td>14.974619</td>
+    </tr>
+    <tr>
+      <th>HS/GED</th>
+      <td>21.972318</td>
+      <td>25.237192</td>
+      <td>19.784173</td>
+      <td>23.605578</td>
+      <td>21.505376</td>
+      <td>25.126904</td>
+    </tr>
+    <tr>
+      <th>Some college/AA</th>
+      <td>37.543253</td>
+      <td>30.929791</td>
+      <td>27.230216</td>
+      <td>33.067729</td>
+      <td>22.580645</td>
+      <td>27.411168</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<p>We see here that the plurality of divorced people have some college but have not graduated from college, while the plurality of married people are college graduates.</p>
+<p>It is quite plausible that there are gender differences in the relationship between educational attainment and marital status. Therefore we can look at the proportion of people in each marital status category, for each combination of the gender and education variables. This analyses yields some interesting trends, notably that women are much more likely to be widowed or divorced than men (e.g.&nbsp;women in the HS/GED group are around 3 times more likely to be widowed than men in the HS/GED group).</p>
+<div class="cell" data-execution_count="59">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The following line does these steps, reading the code from left to right:</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 1 Group the data by every combination of gender, education, and marital status</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 2 Count the number of people in each cell using the 'size' method</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 3 Pivot the marital status results into the columns (using unstack)</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 4 Fill any empty cells with 0</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 5 Normalize the data by row</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>db.groupby([<span class="st">"RIAGENDRx"</span>, <span class="st">"DMDEDUC2x"</span>, <span class="st">"DMDMARTLx"</span>]).size().unstack().fillna(<span class="dv">0</span>).<span class="bu">apply</span>(<span class="kw">lambda</span> x: x<span class="op">/</span>x.<span class="bu">sum</span>() <span class="op">*</span> <span class="dv">100</span>, axis<span class="op">=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="59">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>DMDMARTLx</th>
+      <th>Divorced</th>
+      <th>Living w/partner</th>
+      <th>Married</th>
+      <th>Never married</th>
+      <th>Separated</th>
+      <th>Widowed</th>
+    </tr>
+    <tr>
+      <th>RIAGENDRx</th>
+      <th>DMDEDUC2x</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="5" valign="top">Female</th>
+      <th>9-11</th>
+      <td>11.340206</td>
+      <td>12.371134</td>
+      <td>41.237113</td>
+      <td>17.182131</td>
+      <td>7.560137</td>
+      <td>10.309278</td>
+    </tr>
+    <tr>
+      <th>&lt;9</th>
+      <td>9.169054</td>
+      <td>9.169054</td>
+      <td>42.406877</td>
+      <td>10.888252</td>
+      <td>8.882521</td>
+      <td>19.484241</td>
+    </tr>
+    <tr>
+      <th>College</th>
+      <td>11.018131</td>
+      <td>5.578801</td>
+      <td>57.740586</td>
+      <td>18.270572</td>
+      <td>1.673640</td>
+      <td>5.718271</td>
+    </tr>
+    <tr>
+      <th>HS/GED</th>
+      <td>12.178388</td>
+      <td>10.977702</td>
+      <td>41.337907</td>
+      <td>18.867925</td>
+      <td>4.116638</td>
+      <td>12.521441</td>
+    </tr>
+    <tr>
+      <th>Some college/AA</th>
+      <td>14.867841</td>
+      <td>9.911894</td>
+      <td>41.850220</td>
+      <td>21.035242</td>
+      <td>3.193833</td>
+      <td>9.140969</td>
+    </tr>
+    <tr>
+      <th rowspan="5" valign="top">Male</th>
+      <th>9-11</th>
+      <td>8.238636</td>
+      <td>12.500000</td>
+      <td>52.556818</td>
+      <td>19.034091</td>
+      <td>4.829545</td>
+      <td>2.840909</td>
+    </tr>
+    <tr>
+      <th>&lt;9</th>
+      <td>6.535948</td>
+      <td>11.111111</td>
+      <td>63.071895</td>
+      <td>8.823529</td>
+      <td>3.921569</td>
+      <td>6.535948</td>
+    </tr>
+    <tr>
+      <th>College</th>
+      <td>6.317411</td>
+      <td>6.933744</td>
+      <td>63.636364</td>
+      <td>18.798151</td>
+      <td>1.540832</td>
+      <td>2.773498</td>
+    </tr>
+    <tr>
+      <th>HS/GED</th>
+      <td>9.286899</td>
+      <td>11.442786</td>
+      <td>51.243781</td>
+      <td>21.061360</td>
+      <td>2.653400</td>
+      <td>4.311774</td>
+    </tr>
+    <tr>
+      <th>Some college/AA</th>
+      <td>11.533052</td>
+      <td>10.267229</td>
+      <td>53.023910</td>
+      <td>19.831224</td>
+      <td>1.828411</td>
+      <td>3.516174</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<p>One factor behind the greater number of women who are divorced and widowed could be that women live longer than men. To minimize the impact of this factor, we can recalculate the above table using a few narrow bands of ages. To simplify here, we collapse the marital status data to characterize people as being either “married” or “unmarried” This allows us to focus on the marriage rate, which is a widely-studied variable in social science research.</p>
+<p>There are a number of intriguing results here. For example, the marriage rate seems to drop as college-educated people get older (e.g.&nbsp;71% of college educated women between 49 and 50 are married, but only 65% of college educated women between 50 and 59 are married, an even larger drop occurs for men). However in people with a HS/GED level of education, the marriage rate is higher for older people (although it is lower compared to the college educated sample). There are a number of possible explanations for this, for example, that remarriage after divorce is less common among college graduates.</p>
+<div class="cell" data-execution_count="61">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">#look at narrower age group</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>dx <span class="op">=</span> db.loc[(db.RIDAGEYR <span class="op">&gt;=</span> <span class="dv">40</span>) <span class="op">&amp;</span> (db.RIDAGEYR <span class="op">&lt;</span> <span class="dv">50</span>)]</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> dx.groupby([<span class="st">"RIAGENDRx"</span>, <span class="st">"DMDEDUC2x"</span>, <span class="st">"DMDMARTLx"</span>]).size().unstack().fillna(<span class="dv">0</span>).<span class="bu">apply</span>(<span class="kw">lambda</span> x: x<span class="op">/</span>x.<span class="bu">sum</span>(), axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>a</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="61">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>DMDMARTLx</th>
+      <th>Divorced</th>
+      <th>Living w/partner</th>
+      <th>Married</th>
+      <th>Never married</th>
+      <th>Separated</th>
+      <th>Widowed</th>
+    </tr>
+    <tr>
+      <th>RIAGENDRx</th>
+      <th>DMDEDUC2x</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="5" valign="top">Female</th>
+      <th>9-11</th>
+      <td>0.090909</td>
+      <td>0.072727</td>
+      <td>0.581818</td>
+      <td>0.163636</td>
+      <td>0.090909</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>&lt;9</th>
+      <td>0.089286</td>
+      <td>0.142857</td>
+      <td>0.464286</td>
+      <td>0.142857</td>
+      <td>0.125000</td>
+      <td>0.035714</td>
+    </tr>
+    <tr>
+      <th>College</th>
+      <td>0.121019</td>
+      <td>0.019108</td>
+      <td>0.713376</td>
+      <td>0.108280</td>
+      <td>0.012739</td>
+      <td>0.025478</td>
+    </tr>
+    <tr>
+      <th>HS/GED</th>
+      <td>0.151163</td>
+      <td>0.127907</td>
+      <td>0.476744</td>
+      <td>0.116279</td>
+      <td>0.104651</td>
+      <td>0.023256</td>
+    </tr>
+    <tr>
+      <th>Some college/AA</th>
+      <td>0.184713</td>
+      <td>0.082803</td>
+      <td>0.509554</td>
+      <td>0.152866</td>
+      <td>0.057325</td>
+      <td>0.012739</td>
+    </tr>
+    <tr>
+      <th rowspan="5" valign="top">Male</th>
+      <th>9-11</th>
+      <td>0.092593</td>
+      <td>0.129630</td>
+      <td>0.574074</td>
+      <td>0.166667</td>
+      <td>0.037037</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>&lt;9</th>
+      <td>0.023810</td>
+      <td>0.142857</td>
+      <td>0.714286</td>
+      <td>0.095238</td>
+      <td>0.000000</td>
+      <td>0.023810</td>
+    </tr>
+    <tr>
+      <th>College</th>
+      <td>0.051724</td>
+      <td>0.034483</td>
+      <td>0.879310</td>
+      <td>0.034483</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>HS/GED</th>
+      <td>0.093023</td>
+      <td>0.081395</td>
+      <td>0.616279</td>
+      <td>0.162791</td>
+      <td>0.046512</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>Some college/AA</th>
+      <td>0.125000</td>
+      <td>0.125000</td>
+      <td>0.625000</td>
+      <td>0.096154</td>
+      <td>0.019231</td>
+      <td>0.009615</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="62">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co">#look at another age group</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>dx <span class="op">=</span> db.loc[(db.RIDAGEYR <span class="op">&gt;=</span> <span class="dv">50</span>) <span class="op">&amp;</span> (db.RIDAGEYR <span class="op">&lt;</span> <span class="dv">60</span>)]</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> dx.groupby([<span class="st">"RIAGENDRx"</span>, <span class="st">"DMDEDUC2x"</span>, <span class="st">"DMDMARTLx"</span>]).size().unstack().fillna(<span class="dv">0</span>).<span class="bu">apply</span>(<span class="kw">lambda</span> x: x<span class="op">/</span>x.<span class="bu">sum</span>(), axis<span class="op">=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="64">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">#view the two dfs for the married group</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a.loc[:, [<span class="st">"Married"</span>]].unstack())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>DMDMARTLx   Married                                              
+DMDEDUC2x      9-11        &lt;9   College    HS/GED Some college/AA
+RIAGENDRx                                                        
+Female     0.581818  0.464286  0.713376  0.476744        0.509554
+Male       0.574074  0.714286  0.879310  0.616279        0.625000</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="65">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(b.loc[:, [<span class="st">"Married"</span>]].unstack())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>DMDMARTLx   Married                                              
+DMDEDUC2x      9-11        &lt;9   College    HS/GED Some college/AA
+RIAGENDRx                                                        
+Female     0.490566  0.511111  0.648649  0.563107        0.496403
+Male       0.666667  0.622642  0.737374  0.637255        0.555556</code></pre>
+</div>
+</div>
+<p>We conclude this section by noting that marital status is associated with many factors, including gender and eduational status, but also varies strongly by age and birth cohort. For example, it is unlikely for young people to be widowed, and it is less likely for older people to be “never married”, since a person can transition from “never married” into one of the other categories, but can never move back. Below we will consider the role of age in more detail, and later in the course we will revisit these questions using more sophisticated analytic methods that can account for all of these factors simultaneously. However, since NHANES is a cross-sectional study, there are certain important questions that it cannot be used to answer. For example, while we know each person’s current marital status, we do not know their full marital history (e.g.&nbsp;how many times and at what ages they were married or divorced).</p>
+</section>
+<section id="mixed-categorical-and-quantitative-data" class="level3" data-number="15.0.5">
+<h3 data-number="15.0.5" class="anchored" data-anchor-id="mixed-categorical-and-quantitative-data"><span class="header-section-number">15.0.5</span> Mixed categorical and quantitative data</h3>
+<p>Another situation that commonly arises in data analysis is when we wish to analyze bivariate data consisting of one quantitative and one categorical variable. To illustrate methods that can be used in this setting, we consider the relationship between marital status and age in the NHANES data. Specifically, we consider the distribution of ages for people who are currently in each marital status category. A natural tool in this setting is side-by-side boxplots. Here we see some unsurprising things – widowed people tend to be older, and never-married people tend to be younger.</p>
+<div class="cell" data-execution_count="67">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">4</span>))</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> sns.boxplot(x <span class="op">=</span> db.DMDMARTLx, y <span class="op">=</span> db.RIDAGEYR)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="14_nhanes_multivariate_analyses_files/figure-html/cell-22-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>When we have enough data, a “violinplot” gives a bit more insight into the shapes of the distributions compared to a traditional boxplot. The violinplot below is based on the same data as the boxplot above. We can see quite clearly that the distributions with low mean (living with partner, never married) are strongly right-skewed, while the distribution with high mean (widowed) is strongly left-skewed. The other distributions have intermediate mean values, and are approximately symmetrically distributed. Note also that the never-married distribution has a long shoulder, suggesting that this distributions includes many people who are never-married because they are young, and have not yet reached the ages when people typically marry, but also a substantial number of people will marry for the first time anywhere from their late 30’s to their mid-60’s.</p>
+<div class="cell" data-execution_count="69">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">4</span>))</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> sns.violinplot(x <span class="op">=</span> da.DMDMARTLx, y <span class="op">=</span> da.RIDAGEYR)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="14_nhanes_multivariate_analyses_files/figure-html/cell-23-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../code/13_Unit_Testing.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Unit Testing</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../code/15_nhanes_multivariate_practice.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Practice notebook for multivariate analysis using NHANES data</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

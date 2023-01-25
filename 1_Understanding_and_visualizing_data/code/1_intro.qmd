@@ -8,6 +8,7 @@ A great resource that you can explore is the [This is Statistics website](https:
 - The **mean (average)** of a data set is found by adding all numbers in the data set and then dividing by the number of values in the set. Its highly affected by outliers.
 - The **median** is the middle value when a data set is ordered from least to greatest. 
 - The mode is the number that occurs most often in a data set.
+- I.i.d. data = Independent and identically distributed data. Here each random variable has the same probability distribution as the others and all are mutually independent
 
 
 - **Range**: the difference between the highest and lowest values. 
@@ -31,7 +32,264 @@ A bell-shaped or normal distributions is sometimes referred to as the **68-95-99
 
 ## Multivariate data
 
+Univariate statistics summarize only one variable at a time. Bivariate statistics compare two variables. Multivariate statistics compare more than two variables.
+
+ A **mosaic plot** is a special type of stacked bar chart that shows percentages of data in groups. The plot is a graphical representation of a contingency table. These plots are a way to display qualitative multivariate data.
 
 
+
+### Scatter plots
+
+Scatter plots are a good way to display multivariate quantitative data
+
+Looking at association in scatter plots:
+
+- Linear: The pattern in a plot is a line
+- Quadratic association: The pattern is parabolic, i.e. the pattern goes up at the beginning and goes back down latter
+- No association: there is no pattern
+
+Looking at the direction of the association:
+
+- Positive linear association: the pattern has a positive slope, i.e. when x increases, y decreases
+- Negative linear association
+
+Looking at the strength of the association:
+
+- Weak linear association: the points are largely scattered along the line
+- Moderate linear association: Partial scattering of points
+- Strong linear association: Points are minimally scattered
+
+Quantify the strength and direction via **correlation**:
+
+**Pearson correlation (R or p)**: number between -1 and 1 that indicates the strength and direction of association between two variables. The sign of the correlation indicates the direction, i.e. negative --> negative linear association. The closer the number is to 1 or -1 the stronger the association is. 
+
+One caveat with correlations: Correlation does NOT imply causation. I.e. age might not be the reason to why blood pressure is increasing even though we might see a positive correlation.
+
+
+### Outliers
+
+Outliers are extreme data points that deviate from patterns observed in the rest of the data.
+
+
+
+## Simpson's Paradox
+
+A **confounding variable** is an outside influence that changes the relationship between the independent and the dependent variable (ie. a third variable in a study examining a potential cause-and-effect relationship).  It oftentimes works by affecting the causal relationship between the primary independent variable and the dependent variable.  This confounding variable confuses the relationship between two other variables; it may act by hiding, obscuring, or enhancing the existing relationship. 
+
+For example, suppose that you are interested in examining how activity level affects weight change.  Other factors, like diet, age, and gender may also affect weight change and come into play when looking at the relationship between activity level and weight change.  If one doesn’t control for these factors, the relationship between activity level and weight change can be distorted.
+
+
+
+## Populations and samples
+
+### Sampling from populations intro
+
+**How to make inferential statements about a population?**
+
+1. Conduct a **census**, i.e. measure everyone in a population. So only doable for small populations and can get easily get expensive, so requires careful cost evaluation.
+2. Selected a **probability sample from the population** and measure all units in that sample. Here, we construct a list of all units in a population, i.e. a sampling frame and then we determine a probability of selection for every unit on that list. Then select units from that list at random where sampling rates for different subgroups are determined by the probabilities of selection. Finally, measure those randomly selected units.
+3. Select a **non-probability sample** from the population. This process doesn't involve random selection of individuals, according to probability of selection, so there is no statistical basis for making inferences about the target population --> high potential for bias. Examples are opt-in web surveys, quota sampling, snowball sampling or convenience sampling.
+
+
+**Why probability sampling?**
+
+The known probabilities of selection for all units allow us to make unbiased statements about population features and the uncertainty in survey estimates. The random selection of units protects us against bias from the sample selection mechanisms --> allows us to make population inferences based on sampling distributions.
+
+
+### Simple random sampling (SRS)
+
+- We start with a known list of N population units (N = size of the population) and randomly select n units from the list (n = the size of our sample)
+- Every unit has equal probability of selection  of $n/N$
+- All possible samples of size n are equally likely
+- Estimates of means, proportions and totals based on SRS are unbiased (i.e. equal to the population averages on average)
+- Can be with replacement or without replacement
+    -  **With replacement** means that when we select somebody from a larger list, we've replaced them in that list. And we give them a chance of being selected again in the sample. 
+    - More common is that simple random sampling is done **without replacement**. So once an individual unit is sampled from a given list, they can't be sampled again.
+    - For both: The probability of selection for each unit is still $n/N$
+- Rarely used in practice: Collecting data from n randomly sampled units in a large population can be expensive
+- Example: We have 1000 email conversations and want to check 100 manually for some things, then we can design a random nr. generator to pull out a simple, random sample from our population of emails.
+
+
+
+### Working with complex samples
+
+Key features of complex samples:
+
+- Population is divided into different **strata**, and part of the sample is allocated to each stratum. This ensures the a sample representation from each stratum and reduces variance of survey estimates (this technique is known as **stratification**)
+- **Clusters** of population units (e.g. counties) are randomly samples first (with a known probability) within strata, to save costs of data collection (i.e. we collect data from cases close to each other geographically for the county example)
+- **Units** are randomly sampled from within clusters, according to some probability of selection, and measured
+- The inverse of a person's probability of selection is called their **sampling weight**. I.e. if my probability of selection is 1/100 then my weight is 100 and I represent myself and 99 others of the population.
+- These weights are used to compute **unbiased estimates** of population quantities, i.e. the mean BMI, accounting for different probabilities of selection
+- Probabilities of selection play a direct and essential role in computation of unbiased population estimates
+
+A unit's probability of selection is determined by:
+
+- The number of clusters sampled from each stratum
+- The total number of clusters in the population of each stratum
+- The number of units ultimately sampled from within each randomly selected cluster
+- The total number of units in the population in each cluster
+
+An example for finding a unit's probability of selection:
+
+- We want to select a out of A clusters at random in a given stratum
+- Then we select b out of B units at random from within each selected cluster
+- The probability of selection is: $(a/A)(b/B)$
+
+<img width=500 src="../img/nhanes_ex1.png">
+  
+<img width=500 src="../img/nhanes_ex2.png">
+
+
+
+### Non-probability sampling
+
+- Features of non-probability samples:
+  - Probabilities of selection can't be determined for sampled units a priori (i.e. before you begin the study)
+  - Non random selection of individual units
+  -  Sample can sometimes be divided into groups (strata) or clusters, but clusters are not randomly sampled in earlier stages
+  - Data collection often very cheap compared to probability sampling
+  - Examples: Studies of volunteers for i.e. clinical studies, opt-in/intercept web surveys, snowball samples, convenience sample or quota samples 
+  
+- Problem of not having probabilities of selection:
+  - We have no statistical basis for making an inference about the larger population from which the sample is selected
+  - If we do know the probabilities of selection (in addition to population strata and randomly sampled clusters) then we estimate features of the sampling distribution (if we were to take many random samples using the same design)
+  - Another issue we have is that sampled units are not selected at random and we have a strong risk of sampling bias
+  - Sampled units are generally not representative of the large population of interest
+  - Big data often from non-probability samples, so we need to be careful about what we infer from the data for populations as a whole
+
+- So what can we do, since many data sets arise from non-probability samples, can we say anything about a larger population? 
+  - There are two possible approaches:
+    - Pseudo-randomization
+    - Calibration
+
+
+#### Pseudo-randomization approach
+
+- Combine non-probability sample with a probability sample that collected similar measurements (we "stack" data sets together)
+- Then we estimate the probability of being included in the non-probability sample as function of the auxiliary information available from both samples
+- We then treat the estimated probabilities of selection as being "known" for the non-probability sample and use probability sampling methods for the further analysis
+
+
+#### Calibration approach
+
+- We compute the weights for responding units in a non-probability sample that allow weighted sample to mirror a know population, 
+- i.e. we might have a non probability sample with 70% and 30% male and know we have 50% females and 50% males in the target population. In this example we could then down-weight females and up-weight males
+- Limitation: If the weighting factor is not related to the variable(s) of interest then we will not reduce possible sampling biases
+
+
+### Sampling Variance & Sampling Distributions
+
+#### Sampling distribution
+
+- We generally assume that the values of a variable of interest follow a certain distribution if we could measure the entire population, i.e. a normal distribution (bell curve)
+- A **sampling distribution** is the distribution of survey estimates (not the distribution of values of a variable of interest) that we would see IF we selected many random samples using the same sampling design and computed an estimate for each
+- Key properties of sampling distributions:
+  - They are hypothetical and us asking what would happen if we had the luxury of drawing thousands of probability samples and measure each of them. 
+  - Generally very different appearance from the distribution of values from a single variable of interest
+  - With large enough probability sample size, the sampling distribution estimated will look like a normal distribution, regardless of what estimates are computed due to something called the **Central limit theorem (CLT)**
+  
+
+#### Sampling variance
+
+- The variability in the estimates described by the sampling distribution
+- Because we select a sample (and are not measuring everyone in the population) a survey estimate based on a single sample WILL NOT be exactly equal to the population quantity of interest. This is called **sampling error** 
+- Across hypothetical repeated samples the sampling error will randomly vary (sometimes positive, sometimes negative, ...)
+- The variability of these sampling errors describes the variance of the sampling distribution
+- If every sample estimate of interest would be equal to the population quantity of interest (i.e. in case of a Census) there would be no sampling error and no sampling variance
+- With a larger probability sample size, i.e. sampling more from a given population --> in theory there will be less sampling error and sampling errors will be less variable
+- Larger samples --> Less sampling variance, more precise estimated and more confidence in inferential statements BUT more costly
+- Spread of sampling distribution becomes smaller as the sampling size becomes larger
+
+
+We can play with some data using [this](https://markkurzejaumich.shinyapps.io/multiple_population_bias/) tool.
+
+
+
+
+### Beyond Means: Sampling Distributions of Other Common Statistics
+
+A **correlation coefficient** is a statistical measure of the degree to which changes to the value of one variable predict change to the value of another. In positively correlated variables, the value increases or decreases in tandem.
+
+**Linear regression** analysis is used to predict the value of a variable based on the value of another variable. The variable you want to predict is called the dependent variable (x). The variable you are using to predict the other variable's value is called the independent variable (y).
+
+
+
+## Making Population Inference Based on only one Sample
+
+A key assumption to make an inference on a sample is that we have a normal distribution. So approaches to make such inferences assume that sampling distributions for the thing we want to estimate are (approximately) normal, which is often met if the sample size is large enough.
+
+There are two General approaches to making population inferences based on estimated features of sampling distributions:
+
+1. Estimating a confidence interval
+2. Hypothesis testing
+
+### Estimate a confidence interval for the parameters of interest 
+
+#### Step1
+
+- Compute the **point estimate** , i.e. an unbiased point estimate of the parameter of interest
+- Unbiased point estimate: average of all possible values for a point estimate is equal to the true parameter value
+- This means that the sampling distribution is centered around the truth value
+- If cases had unequal probabilities of selection, those weights need to be used when computing the point estimate
+
+
+#### Step2
+
+- Estimate the **sampling variance** for the point of estimate, i.e. compute an unbiased estimate of the variance of the sampling distribution for the particular point estimate
+- An unbiased variance estimate correctly described the variance of the sampling distribution under the sample design that was used
+- The square root of the variance that we try to estimate is also referred to as the Standard Error of the point estimate
+
+To form a confidence interval we take our best estimate and add/subtract the **margin of error** (i.e. we allow for sampling variable). Margin error refers to "a few" estimated standard errors. "A few" generally refers to a multiplier from an appropriate distribution based on the desired confidence level and sample design. I.e. 95% confidence level <--> 0.05 Significance
+
+
+
+### Hypothesis testing 
+
+- Hypothesis: Asking if the value of a parameter could be XYZ (i.e. use a hypothesized or "null" value)?
+- Thereby we want to answer the question whether the point estimate for the parameter is close to this null value or far away
+- We use the standard error point estimates as a yardstick
+- A common test statistic is: 
+
+$Test.statistic = \frac {(estimate - null. value)} {standard. error}$
+
+- If the null is true, then we can look at the probability of seeing a seeing a test statistic this extreme (or more extreme). If the probability of seeing a test statistic this large under the null hypothesis is small, then we can reject null. 
+
+
+## Resource: Seeing Theory
+
+[Seeing Theory](https://seeing-theory.brown.edu) is a site developed by Brown University that includes many interactive tools that help to visualize statistical concepts. 
+
+The site is broken into six chapters, which includes:
+
+- Basic Probability
+- Compound Probability
+- Probability distributions
+- Frequentist Inference
+- Bayesian Inference
+- Regression Analysis
+
+
+
+## Preventing Bad/Biased Samples
+
+Many so-called “standard” statistical analyses that are presented and discussed in introductory statistics courses make the assumption that the data of interest are independent and identically distributed (or “i.i.d.”) observations. 
+
+As discussed in the lectures earlier this week, **simple random sampling (SRS)** is the closest probability sampling analog to i.i.d., in that the sampling mechanism used to generate the observations will produce independent and identically distributed observations. While this type of sampling will produce samples with this nice “i.i.d.” statistical property, facilitating “standard” statistical analyses, SRS is seldom used when sampling from real populations. 
+
+Consider, for example, a national sample of 1,000 cell phone numbers selected using SRS. While in expectation any one given sample will include a representative random sampling of numbers from area codes across the nation, all possible random samples using SRS are equally likely. What this means is that a simple random sample of cell phone numbers that only includes area codes from Florida is just as likely as a simple random sample of numbers that includes a representative selection across the states. Ideally, we would like to use design strategies to reduce the chances of such a “bad sample” occurring, especially if our variable of interest tends to take on very different values in the state of Florida! The major statistical problem with the simple random “Florida” sample is that any estimate that we compute after collecting data from the sample will likely be very different from the true population parameter that we are trying to estimate (especially if the variable of interest tends to take on very different values in Florida relative to the rest of the nation). Because the probability of selecting these extreme samples is equal to the probability of selecting more representative samples, the sampling distribution for simple random samples can tend to be quite variable.
+
+A very common sampling technique used to minimize the sampling variance that can arise from these so-called “bad samples” in SRS is **stratification**. When we conduct stratified sampling, we first allocate portions of our sample to all possible divisions (or “strata”) of the population of interest (e.g., states). This ensures that some sample will be selected from all of these possible divisions, and that the overall sample will therefore be representative of the target population. For example, using a technique known as proportionate allocation, suppose that we knew that 55% of students enrolled in a particular college were females, and 45% were males. If we wanted to draw a sample of 1,000 students from this college, we would randomly selected 550 females from a list of all females enrolled, and 450 males from a list of all males enrolled. This ensures that our entire sample of size 1,000 won’t include only females!
+
+Another nice property of stratified sampling is that it shrinks the variance of sampling distributions. In SRS, all of the variance within strata and between strata in terms of the variable of interest contributes to the overall sampling variance. In stratified sampling, when we allocate a certain number of sampled units to be selected from each stratum, we remove the between-stratum variance from the overall sampling variance! This is because every hypothetical repeated sample would use the same stratified design, and the same allocation; assuming reasonable response rates, we will have representation from each of the strata where we allocated a portion of the sample. 
+
+When analyzing data, we always have to think carefully about the process used to ultimately produce the data that we are analyzing. We may dedicate substantial resources to a carefully designed stratified sample of some population that will produce unbiased estimates by design; however, there is no guarantee that every unit sampled will agree to provide data. If a sampled unit refuses to provide data after being sampled, this situation is known as  **unit nonresponse **. Unit nonresponse can have a particularly negative impact on the quality of a given sample when the units that ultimately agree to provide data differ significantly from the units that do not agree to provide data on the variables of interest.
+
+
+For example, suppose that people with lower income tend to respond to a survey of a nationally representative sample of individuals at higher rates than people with higher income. Because the resulting sample of respondents to the survey request tends to feature people with lower income, any estimates related to income (which will always be computed using data from the respondents, or the units that agree to provide data!) will be subject to another form of selection bias, namely **nonresponse bias**. In short, nonresponse bias occurs when there is a tendency for the units in a sample that agree to provide data to be systematically different from the units in the sample that do not provide data (in terms of the variable of interest). This type of bias can also occur for estimates based on specific variables, when sampled units may agree to provide data in general, but not on specific variables. For instance, a survey respondent may agree to participate in the survey, but refuse to share their income. This type of nonresponse is known as **item nonresponse**.
+
+Whereas stratified sampling is a design tool that can be used to reduce selection bias from a sampling perspective, the selection bias introduced by unit or item nonresponse can either be addressed during the data collection process or via post-survey adjustments to the estimates based on a respondent sample. For example, sampled units reluctant to provide data may be offered additional incentives for their participation, or offered different methods for providing their data (e.g., over the web, rather than speaking to an interviewer). Such units may also receive additional effort from a data collection organization (e.g., more follow-up contact attempts). After the survey is over, if there is still evidence that the respondent sample somehow differs systematically from the full sample, respondents who had a lower probability of responding may receive larger weight in the overall analysis. Item nonresponse may be addressed via statistical models used to predict the missing values as a function of other observed data. There are all tools designed to reduce the type of selection bias that can arise from nonresponse.
+
+
+## Inference for Non-Probability Samples
 
 
