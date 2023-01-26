@@ -175,6 +175,11 @@ ul.task-list li input[type="checkbox"] {
   <a href="../code/15_nhanes_multivariate_practice.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Practice notebook for multivariate analysis using NHANES data</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../code/16_Sampling_from_a_Biased_Population.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Sampling from a Biased Population</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -197,6 +202,28 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#sampling-from-populations-intro" id="toc-sampling-from-populations-intro" class="nav-link" data-scroll-target="#sampling-from-populations-intro"><span class="toc-section-number">2.5.1</span>  Sampling from populations intro</a></li>
   <li><a href="#simple-random-sampling-srs" id="toc-simple-random-sampling-srs" class="nav-link" data-scroll-target="#simple-random-sampling-srs"><span class="toc-section-number">2.5.2</span>  Simple random sampling (SRS)</a></li>
   <li><a href="#working-with-complex-samples" id="toc-working-with-complex-samples" class="nav-link" data-scroll-target="#working-with-complex-samples"><span class="toc-section-number">2.5.3</span>  Working with complex samples</a></li>
+  <li><a href="#non-probability-sampling" id="toc-non-probability-sampling" class="nav-link" data-scroll-target="#non-probability-sampling"><span class="toc-section-number">2.5.4</span>  Non-probability sampling</a></li>
+  <li><a href="#sampling-variance-sampling-distributions" id="toc-sampling-variance-sampling-distributions" class="nav-link" data-scroll-target="#sampling-variance-sampling-distributions"><span class="toc-section-number">2.5.5</span>  Sampling Variance &amp; Sampling Distributions</a></li>
+  <li><a href="#beyond-means-sampling-distributions-of-other-common-statistics" id="toc-beyond-means-sampling-distributions-of-other-common-statistics" class="nav-link" data-scroll-target="#beyond-means-sampling-distributions-of-other-common-statistics"><span class="toc-section-number">2.5.6</span>  Beyond Means: Sampling Distributions of Other Common Statistics</a></li>
+  </ul></li>
+  <li><a href="#making-population-inference-based-on-only-one-sample" id="toc-making-population-inference-based-on-only-one-sample" class="nav-link" data-scroll-target="#making-population-inference-based-on-only-one-sample"><span class="toc-section-number">2.6</span>  Making Population Inference Based on only one Sample</a>
+  <ul class="collapse">
+  <li><a href="#estimate-a-confidence-interval-for-the-parameters-of-interest" id="toc-estimate-a-confidence-interval-for-the-parameters-of-interest" class="nav-link" data-scroll-target="#estimate-a-confidence-interval-for-the-parameters-of-interest"><span class="toc-section-number">2.6.1</span>  Estimate a confidence interval for the parameters of interest</a></li>
+  <li><a href="#hypothesis-testing" id="toc-hypothesis-testing" class="nav-link" data-scroll-target="#hypothesis-testing"><span class="toc-section-number">2.6.2</span>  Hypothesis testing</a></li>
+  </ul></li>
+  <li><a href="#resource-seeing-theory" id="toc-resource-seeing-theory" class="nav-link" data-scroll-target="#resource-seeing-theory"><span class="toc-section-number">2.7</span>  Resource: Seeing Theory</a></li>
+  <li><a href="#preventing-badbiased-samples" id="toc-preventing-badbiased-samples" class="nav-link" data-scroll-target="#preventing-badbiased-samples"><span class="toc-section-number">2.8</span>  Preventing Bad/Biased Samples</a></li>
+  <li><a href="#inference-for-single-non-probability-samples" id="toc-inference-for-single-non-probability-samples" class="nav-link" data-scroll-target="#inference-for-single-non-probability-samples"><span class="toc-section-number">2.9</span>  Inference for single, non-probability samples</a>
+  <ul class="collapse">
+  <li><a href="#quasi-randomization" id="toc-quasi-randomization" class="nav-link" data-scroll-target="#quasi-randomization"><span class="toc-section-number">2.9.1</span>  Quasi-randomization</a></li>
+  <li><a href="#population-modelling" id="toc-population-modelling" class="nav-link" data-scroll-target="#population-modelling"><span class="toc-section-number">2.9.2</span>  Population modelling</a></li>
+  </ul></li>
+  <li><a href="#complex-samples" id="toc-complex-samples" class="nav-link" data-scroll-target="#complex-samples"><span class="toc-section-number">2.10</span>  Complex samples</a>
+  <ul class="collapse">
+  <li><a href="#features-of-complex-samples-stratification" id="toc-features-of-complex-samples-stratification" class="nav-link" data-scroll-target="#features-of-complex-samples-stratification"><span class="toc-section-number">2.10.1</span>  Features of complex samples: Stratification</a></li>
+  <li><a href="#features-of-complex-samples-cluster-sampling-i.e.-clustering" id="toc-features-of-complex-samples-cluster-sampling-i.e.-clustering" class="nav-link" data-scroll-target="#features-of-complex-samples-cluster-sampling-i.e.-clustering"><span class="toc-section-number">2.10.2</span>  Features of complex samples: Cluster sampling (i.e.&nbsp;Clustering)</a></li>
+  <li><a href="#features-of-complex-samples-weighting" id="toc-features-of-complex-samples-weighting" class="nav-link" data-scroll-target="#features-of-complex-samples-weighting"><span class="toc-section-number">2.10.3</span>  Features of complex samples: Weighting</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="toc-section-number">2.10.4</span>  Summary</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -316,6 +343,9 @@ ul.task-list li input[type="checkbox"] {
 <li>Population is divided into different <strong>strata</strong>, and part of the sample is allocated to each stratum. This ensures the a sample representation from each stratum and reduces variance of survey estimates (this technique is known as <strong>stratification</strong>)</li>
 <li><strong>Clusters</strong> of population units (e.g.&nbsp;counties) are randomly samples first (with a known probability) within strata, to save costs of data collection (i.e.&nbsp;we collect data from cases close to each other geographically for the county example)</li>
 <li><strong>Units</strong> are randomly sampled from within clusters, according to some probability of selection, and measured</li>
+<li>The inverse of a person’s probability of selection is called their <strong>sampling weight</strong>. I.e. if my probability of selection is 1/100 then my weight is 100 and I represent myself and 99 others of the population.</li>
+<li>These weights are used to compute <strong>unbiased estimates</strong> of population quantities, i.e.&nbsp;the mean BMI, accounting for different probabilities of selection</li>
+<li>Probabilities of selection play a direct and essential role in computation of unbiased population estimates</li>
 </ul>
 <p>A unit’s probability of selection is determined by:</p>
 <ul>
@@ -332,6 +362,239 @@ ul.task-list li input[type="checkbox"] {
 </ul>
 <p><img width="500" src="../img/nhanes_ex1.png"></p>
 <p><img width="500" src="../img/nhanes_ex2.png"></p>
+</section>
+<section id="non-probability-sampling" class="level3" data-number="2.5.4">
+<h3 data-number="2.5.4" class="anchored" data-anchor-id="non-probability-sampling"><span class="header-section-number">2.5.4</span> Non-probability sampling</h3>
+<ul>
+<li>Features of non-probability samples:
+<ul>
+<li>Probabilities of selection can’t be determined for sampled units a priori (i.e.&nbsp;before you begin the study)</li>
+<li>Non random selection of individual units</li>
+<li>Sample can sometimes be divided into groups (strata) or clusters, but clusters are not randomly sampled in earlier stages</li>
+<li>Data collection often very cheap compared to probability sampling</li>
+<li>Examples: Studies of volunteers for i.e.&nbsp;clinical studies, opt-in/intercept web surveys, snowball samples, convenience sample or quota samples</li>
+</ul></li>
+<li>Problem of not having probabilities of selection:
+<ul>
+<li>We have no statistical basis for making an inference about the larger population from which the sample is selected</li>
+<li>If we do know the probabilities of selection (in addition to population strata and randomly sampled clusters) then we estimate features of the sampling distribution (if we were to take many random samples using the same design)</li>
+<li>Another issue we have is that sampled units are not selected at random and we have a strong risk of sampling bias</li>
+<li>Sampled units are generally not representative of the large population of interest</li>
+<li>Big data often from non-probability samples, so we need to be careful about what we infer from the data for populations as a whole</li>
+</ul></li>
+<li>So what can we do, since many data sets arise from non-probability samples, can we say anything about a larger population?
+<ul>
+<li>There are two possible approaches:
+<ul>
+<li>Pseudo-randomization</li>
+<li>Calibration</li>
+</ul></li>
+</ul></li>
+</ul>
+<section id="pseudo-randomization-approach" class="level4" data-number="2.5.4.1">
+<h4 data-number="2.5.4.1" class="anchored" data-anchor-id="pseudo-randomization-approach"><span class="header-section-number">2.5.4.1</span> Pseudo-randomization approach</h4>
+<ul>
+<li>Combine non-probability sample with a probability sample that collected similar measurements (we “stack” data sets together)</li>
+<li>Then we estimate the probability of being included in the non-probability sample as function of the auxiliary information available from both samples</li>
+<li>We then treat the estimated probabilities of selection as being “known” for the non-probability sample and use probability sampling methods for the further analysis</li>
+</ul>
+</section>
+<section id="calibration-approach" class="level4" data-number="2.5.4.2">
+<h4 data-number="2.5.4.2" class="anchored" data-anchor-id="calibration-approach"><span class="header-section-number">2.5.4.2</span> Calibration approach</h4>
+<ul>
+<li>We compute the weights for responding units in a non-probability sample that allow weighted sample to mirror a know population,</li>
+<li>i.e.&nbsp;we might have a non probability sample with 70% and 30% male and know we have 50% females and 50% males in the target population. In this example we could then down-weight females and up-weight males</li>
+<li>Limitation: If the weighting factor is not related to the variable(s) of interest then we will not reduce possible sampling biases</li>
+</ul>
+</section>
+</section>
+<section id="sampling-variance-sampling-distributions" class="level3" data-number="2.5.5">
+<h3 data-number="2.5.5" class="anchored" data-anchor-id="sampling-variance-sampling-distributions"><span class="header-section-number">2.5.5</span> Sampling Variance &amp; Sampling Distributions</h3>
+<section id="sampling-distribution" class="level4" data-number="2.5.5.1">
+<h4 data-number="2.5.5.1" class="anchored" data-anchor-id="sampling-distribution"><span class="header-section-number">2.5.5.1</span> Sampling distribution</h4>
+<ul>
+<li>We generally assume that the values of a variable of interest follow a certain distribution if we could measure the entire population, i.e.&nbsp;a normal distribution (bell curve)</li>
+<li>A <strong>sampling distribution</strong> is the distribution of survey estimates (not the distribution of values of a variable of interest) that we would see IF we selected many random samples using the same sampling design and computed an estimate for each</li>
+<li>Key properties of sampling distributions:
+<ul>
+<li>They are hypothetical and us asking what would happen if we had the luxury of drawing thousands of probability samples and measure each of them.</li>
+<li>Generally very different appearance from the distribution of values from a single variable of interest</li>
+<li>With large enough probability sample size, the sampling distribution estimated will look like a normal distribution, regardless of what estimates are computed due to something called the <strong>Central limit theorem (CLT)</strong></li>
+</ul></li>
+</ul>
+</section>
+<section id="sampling-variance" class="level4" data-number="2.5.5.2">
+<h4 data-number="2.5.5.2" class="anchored" data-anchor-id="sampling-variance"><span class="header-section-number">2.5.5.2</span> Sampling variance</h4>
+<ul>
+<li>The variability in the estimates described by the sampling distribution</li>
+<li>Because we select a sample (and are not measuring everyone in the population) a survey estimate based on a single sample WILL NOT be exactly equal to the population quantity of interest. This is called <strong>sampling error</strong></li>
+<li>Across hypothetical repeated samples the sampling error will randomly vary (sometimes positive, sometimes negative, …)</li>
+<li>The variability of these sampling errors describes the variance of the sampling distribution</li>
+<li>If every sample estimate of interest would be equal to the population quantity of interest (i.e.&nbsp;in case of a Census) there would be no sampling error and no sampling variance</li>
+<li>With a larger probability sample size, i.e.&nbsp;sampling more from a given population –&gt; in theory there will be less sampling error and sampling errors will be less variable</li>
+<li>Larger samples –&gt; Less sampling variance, more precise estimated and more confidence in inferential statements BUT more costly</li>
+<li>Spread of sampling distribution becomes smaller as the sampling size becomes larger</li>
+</ul>
+<p>We can play with some data using <a href="https://markkurzejaumich.shinyapps.io/multiple_population_bias/">this</a> tool.</p>
+</section>
+</section>
+<section id="beyond-means-sampling-distributions-of-other-common-statistics" class="level3" data-number="2.5.6">
+<h3 data-number="2.5.6" class="anchored" data-anchor-id="beyond-means-sampling-distributions-of-other-common-statistics"><span class="header-section-number">2.5.6</span> Beyond Means: Sampling Distributions of Other Common Statistics</h3>
+<p>A <strong>correlation coefficient</strong> is a statistical measure of the degree to which changes to the value of one variable predict change to the value of another. In positively correlated variables, the value increases or decreases in tandem.</p>
+<p><strong>Linear regression</strong> analysis is used to predict the value of a variable based on the value of another variable. The variable you want to predict is called the dependent variable (x). The variable you are using to predict the other variable’s value is called the independent variable (y).</p>
+</section>
+</section>
+<section id="making-population-inference-based-on-only-one-sample" class="level2" data-number="2.6">
+<h2 data-number="2.6" class="anchored" data-anchor-id="making-population-inference-based-on-only-one-sample"><span class="header-section-number">2.6</span> Making Population Inference Based on only one Sample</h2>
+<p>A key assumption to make an inference on a sample is that we have a normal distribution. So approaches to make such inferences assume that sampling distributions for the thing we want to estimate are (approximately) normal, which is often met if the sample size is large enough.</p>
+<p>There are two General approaches to making population inferences based on estimated features of sampling distributions:</p>
+<ol type="1">
+<li>Estimating a confidence interval</li>
+<li>Hypothesis testing</li>
+</ol>
+<section id="estimate-a-confidence-interval-for-the-parameters-of-interest" class="level3" data-number="2.6.1">
+<h3 data-number="2.6.1" class="anchored" data-anchor-id="estimate-a-confidence-interval-for-the-parameters-of-interest"><span class="header-section-number">2.6.1</span> Estimate a confidence interval for the parameters of interest</h3>
+<section id="step1" class="level4" data-number="2.6.1.1">
+<h4 data-number="2.6.1.1" class="anchored" data-anchor-id="step1"><span class="header-section-number">2.6.1.1</span> Step1</h4>
+<ul>
+<li>Compute the <strong>point estimate</strong> , i.e.&nbsp;an unbiased point estimate of the parameter of interest</li>
+<li>Unbiased point estimate: average of all possible values for a point estimate is equal to the true parameter value</li>
+<li>This means that the sampling distribution is centered around the truth value</li>
+<li>If cases had unequal probabilities of selection, those weights need to be used when computing the point estimate</li>
+</ul>
+</section>
+<section id="step2" class="level4" data-number="2.6.1.2">
+<h4 data-number="2.6.1.2" class="anchored" data-anchor-id="step2"><span class="header-section-number">2.6.1.2</span> Step2</h4>
+<ul>
+<li>Estimate the <strong>sampling variance</strong> for the point of estimate, i.e.&nbsp;compute an unbiased estimate of the variance of the sampling distribution for the particular point estimate</li>
+<li>An unbiased variance estimate correctly described the variance of the sampling distribution under the sample design that was used</li>
+<li>The square root of the variance that we try to estimate is also referred to as the Standard Error of the point estimate</li>
+</ul>
+<p>To form a confidence interval we take our best estimate and add/subtract the <strong>margin of error</strong> (i.e.&nbsp;we allow for sampling variable). Margin error refers to “a few” estimated standard errors. “A few” generally refers to a multiplier from an appropriate distribution based on the desired confidence level and sample design. I.e. 95% confidence level &lt;–&gt; 0.05 Significance</p>
+</section>
+</section>
+<section id="hypothesis-testing" class="level3" data-number="2.6.2">
+<h3 data-number="2.6.2" class="anchored" data-anchor-id="hypothesis-testing"><span class="header-section-number">2.6.2</span> Hypothesis testing</h3>
+<ul>
+<li>Hypothesis: Asking if the value of a parameter could be XYZ (i.e.&nbsp;use a hypothesized or “null” value)?</li>
+<li>Thereby we want to answer the question whether the point estimate for the parameter is close to this null value or far away</li>
+<li>We use the standard error point estimates as a yardstick</li>
+<li>A common test statistic is:</li>
+</ul>
+<p><span class="math inline">\(Test.statistic = \frac {(estimate - null. value)} {standard. error}\)</span></p>
+<ul>
+<li>If the null is true, then we can look at the probability of seeing a seeing a test statistic this extreme (or more extreme). If the probability of seeing a test statistic this large under the null hypothesis is small, then we can reject null.</li>
+</ul>
+</section>
+</section>
+<section id="resource-seeing-theory" class="level2" data-number="2.7">
+<h2 data-number="2.7" class="anchored" data-anchor-id="resource-seeing-theory"><span class="header-section-number">2.7</span> Resource: Seeing Theory</h2>
+<p><a href="https://seeing-theory.brown.edu">Seeing Theory</a> is a site developed by Brown University that includes many interactive tools that help to visualize statistical concepts.</p>
+<p>The site is broken into six chapters, which includes:</p>
+<ul>
+<li>Basic Probability</li>
+<li>Compound Probability</li>
+<li>Probability distributions</li>
+<li>Frequentist Inference</li>
+<li>Bayesian Inference</li>
+<li>Regression Analysis</li>
+</ul>
+</section>
+<section id="preventing-badbiased-samples" class="level2" data-number="2.8">
+<h2 data-number="2.8" class="anchored" data-anchor-id="preventing-badbiased-samples"><span class="header-section-number">2.8</span> Preventing Bad/Biased Samples</h2>
+<p>Many so-called “standard” statistical analyses that are presented and discussed in introductory statistics courses make the assumption that the data of interest are independent and identically distributed (or “i.i.d.”) observations.</p>
+<p>As discussed in the lectures earlier this week, <strong>simple random sampling (SRS)</strong> is the closest probability sampling analog to i.i.d., in that the sampling mechanism used to generate the observations will produce independent and identically distributed observations. While this type of sampling will produce samples with this nice “i.i.d.” statistical property, facilitating “standard” statistical analyses, SRS is seldom used when sampling from real populations.</p>
+<p>Consider, for example, a national sample of 1,000 cell phone numbers selected using SRS. While in expectation any one given sample will include a representative random sampling of numbers from area codes across the nation, all possible random samples using SRS are equally likely. What this means is that a simple random sample of cell phone numbers that only includes area codes from Florida is just as likely as a simple random sample of numbers that includes a representative selection across the states. Ideally, we would like to use design strategies to reduce the chances of such a “bad sample” occurring, especially if our variable of interest tends to take on very different values in the state of Florida! The major statistical problem with the simple random “Florida” sample is that any estimate that we compute after collecting data from the sample will likely be very different from the true population parameter that we are trying to estimate (especially if the variable of interest tends to take on very different values in Florida relative to the rest of the nation). Because the probability of selecting these extreme samples is equal to the probability of selecting more representative samples, the sampling distribution for simple random samples can tend to be quite variable.</p>
+<p>A very common sampling technique used to minimize the sampling variance that can arise from these so-called “bad samples” in SRS is <strong>stratification</strong>. When we conduct stratified sampling, we first allocate portions of our sample to all possible divisions (or “strata”) of the population of interest (e.g., states). This ensures that some sample will be selected from all of these possible divisions, and that the overall sample will therefore be representative of the target population. For example, using a technique known as proportionate allocation, suppose that we knew that 55% of students enrolled in a particular college were females, and 45% were males. If we wanted to draw a sample of 1,000 students from this college, we would randomly selected 550 females from a list of all females enrolled, and 450 males from a list of all males enrolled. This ensures that our entire sample of size 1,000 won’t include only females!</p>
+<p>Another nice property of stratified sampling is that it shrinks the variance of sampling distributions. In SRS, all of the variance within strata and between strata in terms of the variable of interest contributes to the overall sampling variance. In stratified sampling, when we allocate a certain number of sampled units to be selected from each stratum, we remove the between-stratum variance from the overall sampling variance! This is because every hypothetical repeated sample would use the same stratified design, and the same allocation; assuming reasonable response rates, we will have representation from each of the strata where we allocated a portion of the sample.</p>
+<p>When analyzing data, we always have to think carefully about the process used to ultimately produce the data that we are analyzing. We may dedicate substantial resources to a carefully designed stratified sample of some population that will produce unbiased estimates by design; however, there is no guarantee that every unit sampled will agree to provide data. If a sampled unit refuses to provide data after being sampled, this situation is known as <strong>unit nonresponse </strong>. Unit nonresponse can have a particularly negative impact on the quality of a given sample when the units that ultimately agree to provide data differ significantly from the units that do not agree to provide data on the variables of interest.</p>
+<p>For example, suppose that people with lower income tend to respond to a survey of a nationally representative sample of individuals at higher rates than people with higher income. Because the resulting sample of respondents to the survey request tends to feature people with lower income, any estimates related to income (which will always be computed using data from the respondents, or the units that agree to provide data!) will be subject to another form of selection bias, namely <strong>nonresponse bias</strong>. In short, nonresponse bias occurs when there is a tendency for the units in a sample that agree to provide data to be systematically different from the units in the sample that do not provide data (in terms of the variable of interest). This type of bias can also occur for estimates based on specific variables, when sampled units may agree to provide data in general, but not on specific variables. For instance, a survey respondent may agree to participate in the survey, but refuse to share their income. This type of nonresponse is known as <strong>item nonresponse</strong>.</p>
+<p>Whereas stratified sampling is a design tool that can be used to reduce selection bias from a sampling perspective, the selection bias introduced by unit or item nonresponse can either be addressed during the data collection process or via post-survey adjustments to the estimates based on a respondent sample. For example, sampled units reluctant to provide data may be offered additional incentives for their participation, or offered different methods for providing their data (e.g., over the web, rather than speaking to an interviewer). Such units may also receive additional effort from a data collection organization (e.g., more follow-up contact attempts). After the survey is over, if there is still evidence that the respondent sample somehow differs systematically from the full sample, respondents who had a lower probability of responding may receive larger weight in the overall analysis. Item nonresponse may be addressed via statistical models used to predict the missing values as a function of other observed data. There are all tools designed to reduce the type of selection bias that can arise from nonresponse.</p>
+</section>
+<section id="inference-for-single-non-probability-samples" class="level2" data-number="2.9">
+<h2 data-number="2.9" class="anchored" data-anchor-id="inference-for-single-non-probability-samples"><span class="header-section-number">2.9</span> Inference for single, non-probability samples</h2>
+<ul>
+<li>Non-probability samples do not let us rely on sampling theory for making population inferences based on expected sampling distributions</li>
+<li>There are two approaches to work with these samples:
+<ul>
+<li>Quasi-randomization (or pseudo-randomization)</li>
+<li>Population modelling</li>
+</ul></li>
+</ul>
+<section id="quasi-randomization" class="level3" data-number="2.9.1">
+<h3 data-number="2.9.1" class="anchored" data-anchor-id="quasi-randomization"><span class="header-section-number">2.9.1</span> Quasi-randomization</h3>
+<ul>
+<li>In this approach we combine data from a separate, independent non-probability sample with data from a probability sample that collected the same type of measures</li>
+<li>I.e. when collecting BMI or other health data from volunteers we could combine it with data from the NHANES dataset that also collected the same health measures</li>
+<li>To do this we stack the two datasets together (i.e.&nbsp;concatenate them) and the non-probability sample may have other response variables that we are really interested in</li>
+<li>We code the data, i.e.&nbsp;give it an extra variable (NPSAMPLE), so that we know whether or not they came from a non-prob (1) or prob sample (0)</li>
+<li>Then we can fit a logistic regression models: We use this to predict the NPSAMPLE with common variables weighting non-prob cases by 1 and prob cases by their survey weights. I.e. we’re trying predict the probability of having a one on the NPSAMPLE variable that we just formed, or in other words, the probability of being in the non-probability sample with those common variables, like bmi, age, and blood pressure, and race ethnicity</li>
+<li>So the idea is that we can predict the probability of an individual of being in a non-prob sample within whatever population is represented by the prob sample</li>
+<li>Then we can invert the predicted probabilities for the non-prob sample, treat them as survey weight in standard weighted survey analysis</li>
+</ul>
+<p><span class="math inline">\(survey.weight = \frac {1} {predicted.probability}\)</span></p>
+<ul>
+<li>The issue in this approach is the issue of estimating sampling variance and some kind of replication method is recommended (i.e.&nbsp;computing weighted estimates in bootstrap samples or jackknife samples of the original units)</li>
+</ul>
+</section>
+<section id="population-modelling" class="level3" data-number="2.9.2">
+<h3 data-number="2.9.2" class="anchored" data-anchor-id="population-modelling"><span class="header-section-number">2.9.2</span> Population modelling</h3>
+<ul>
+<li>In this approach the idea is to use predictive modeling to predict aggregate sample quantities (usually totals) on key variables of interest for population units that are not included in the non-prob sample</li>
+<li>Given the predictions of the variables of interests for everybody else who was not included in the non-probability sample, we compute our estimates of interests using estimated totals on the variables of interest based on those predictions</li>
+<li>i.e.&nbsp;for computing a weighted mean, we would calculate the overall total of a variable of interest for everyone in the population using the observed values in a non-probability sample, and the predicted values for everybody else who was not included in the non-probability sample. Then, we would divide that predicted total by the estimated population size, and that gives us an estimate of our overall population mean</li>
+</ul>
+<p><span class="math inline">\(weighted.mean = \frac {predicted.total.estimate} {estimated.population.size}\)</span></p>
+<ul>
+<li>The key difference to quasi-randomization is that we don’t need a probability sample with the same measures</li>
+<li>This approach relies on having good regression models to predict the key variables using other auxiliary information available at aggregate level (i.e.&nbsp;totals for an overall population)</li>
+<li>Standard errors can be based on fitted regression models or using similar replication methods</li>
+</ul>
+</section>
+</section>
+<section id="complex-samples" class="level2" data-number="2.10">
+<h2 data-number="2.10" class="anchored" data-anchor-id="complex-samples"><span class="header-section-number">2.10</span> Complex samples</h2>
+<p>A <strong>complex sample</strong> is any probability sample where the design involves anything more than a Simple Random Sampling (SRS).</p>
+<section id="features-of-complex-samples-stratification" class="level3" data-number="2.10.1">
+<h3 data-number="2.10.1" class="anchored" data-anchor-id="features-of-complex-samples-stratification"><span class="header-section-number">2.10.1</span> Features of complex samples: Stratification</h3>
+<ul>
+<li>One important feature of this type of sampling design is called <strong>stratification</strong>. So stratification is defined as the allocation of an overall sample to different strata or mutually exclusive divisions of the larger population. So, for example, in a large national sample from the United States, these could be different regions in the United States.</li>
+<li>There are several different potential allocation schemes in this case for stratification. Either way, or either allocation scheme that we use, our aim is to minimize sampling variance for particular variables given fixed costs.</li>
+<li>Stratification has the very attractive property of eliminating between strata variance in means or totals of interest on the variable of interest from the overall sampling variance</li>
+<li>So it’s very important to account for this kind of stratification in our analysis. Otherwise, our sampling variance may be artificially large resulting in too conservative inferences and confidence intervals that are too wide.</li>
+</ul>
+</section>
+<section id="features-of-complex-samples-cluster-sampling-i.e.-clustering" class="level3" data-number="2.10.2">
+<h3 data-number="2.10.2" class="anchored" data-anchor-id="features-of-complex-samples-cluster-sampling-i.e.-clustering"><span class="header-section-number">2.10.2</span> Features of complex samples: Cluster sampling (i.e.&nbsp;Clustering)</h3>
+<ul>
+<li>In cluster sampling, random sampling of larger clusters of population elements occurs, possibly across multiple stages.</li>
+<li>For example, the national sample, we might first sample US counties. And then within those US counties, we might sample area segments. And within those area segments, we might sample households.</li>
+<li>This idea of cluster sampling is used in practice to reduce the cost of data collection. It’s very expensive to visit little n randomly sampled units from a large and widespread population. Instead, we draw random samples of clusters according to a probability sampling design. And then we visit those clusters and collect data from that small clustered area.</li>
+<li>But Clustering tends to increase the sampling variance of estimates because units coming from the same cluster tend to have similar or correlated values on the variables of interest. We’re not measuring unique information when we draw the cluster sampling. So we do it to save costs, but we don’t pick up on as much unique information as we could if we weren’t drawing a cluster sample.</li>
+<li>So much like with stratification, it’s important to account for cluster sampling when we analyze the survey data. Otherwise, our inferences might become too narrow, unlike stratification.</li>
+</ul>
+</section>
+<section id="features-of-complex-samples-weighting" class="level3" data-number="2.10.3">
+<h3 data-number="2.10.3" class="anchored" data-anchor-id="features-of-complex-samples-weighting"><span class="header-section-number">2.10.3</span> Features of complex samples: Weighting</h3>
+<ul>
+<li>Remember, complex samples are probability samples but if there are certain subgroups of the population that are sampled at higher rates, this idea of oversampling from particular population subgroups, we end up with unequal probabilities of selection for different population units. So the probability of being included in the probability sample could be very different for different people</li>
+<li>If there are in fact unequal probabilities of selection for different people in the overall population, we need to account for these unequal probabilities to make unbiased population inferences.</li>
+<li>weights and complex samples are defined by the inverse of a given person’s probability of selection. And these are the weights, again, that we would ultimately use when analyzing the data</li>
+<li>I.e. if my probability of selected is 1/100 –&gt; my weight is 100 and I represent myself and 99 others in the population</li>
+<li>Weights can also be adjusted for different possibilities of responding to a given survey request and different subgroups</li>
+<li>I.e. if my prob is 1/100 but if I belong to a subgroup were only 50% of this subgroup responded then I can adjust my weight as follows: (1/0.01) * (1/0.5) = 200</li>
+<li>The drawback of using weights in analysis is that much like cluster sampling, highly variable adjusted survey weights tend to increase the sampling variance of weighted estimates. So there’s a lot of variability in our weights, that means there’s a lot of uncertainty in terms of who we’re actually sampling and who they represent</li>
+</ul>
+</section>
+<section id="summary" class="level3" data-number="2.10.4">
+<h3 data-number="2.10.4" class="anchored" data-anchor-id="summary"><span class="header-section-number">2.10.4</span> Summary</h3>
+<ul>
+<li>Stratification reduces sampling variance. It gives us more precise estimates, because we’re removing that between strata variability from the overall sampling variability</li>
+<li>Cluster sampling and weighting, on the other hand, they tend to increase sampling variants</li>
+<li>The net multiplicative effect of all of these three complex sample design features on the standard error is what we refer to as a <strong>design effect</strong>. This is the net multiplicative change in the variance of an estimate relative to simple random sampling</li>
+<li>A failure to identify those features of complex samples when performing data analysis is what’s often referred to as <strong>analytic error</strong>.</li>
+<li>So when you’re scouring documentation for survey data, you can think of a couple important keywords that you can look for that would indicate the fact that complex sampling was actually performed. Things like multistage sampling, or weights, or stratification, or cluster sampling, or design effects, these are all words to look for in your documentation to see if this kind of complex sampling was actually performed</li>
+</ul>
 
 
 </section>

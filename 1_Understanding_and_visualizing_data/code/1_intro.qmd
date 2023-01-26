@@ -290,6 +290,86 @@ For example, suppose that people with lower income tend to respond to a survey o
 Whereas stratified sampling is a design tool that can be used to reduce selection bias from a sampling perspective, the selection bias introduced by unit or item nonresponse can either be addressed during the data collection process or via post-survey adjustments to the estimates based on a respondent sample. For example, sampled units reluctant to provide data may be offered additional incentives for their participation, or offered different methods for providing their data (e.g., over the web, rather than speaking to an interviewer). Such units may also receive additional effort from a data collection organization (e.g., more follow-up contact attempts). After the survey is over, if there is still evidence that the respondent sample somehow differs systematically from the full sample, respondents who had a lower probability of responding may receive larger weight in the overall analysis. Item nonresponse may be addressed via statistical models used to predict the missing values as a function of other observed data. There are all tools designed to reduce the type of selection bias that can arise from nonresponse.
 
 
-## Inference for Non-Probability Samples
+
+## Inference for single, non-probability samples
+
+- Non-probability samples do not let us rely on sampling theory for making population inferences based on expected sampling distributions
+- There are two approaches to work with these samples:
+  - Quasi-randomization (or pseudo-randomization)
+  - Population modelling
+
+
+### Quasi-randomization
+
+- In this approach we combine data from a separate, independent non-probability sample with data from a probability sample that collected the same type of measures
+- I.e. when collecting BMI or other health data from volunteers we could combine it with data from the NHANES dataset that also collected the same health measures
+- To do this we stack the two datasets together (i.e. concatenate them) and the non-probability sample may have other response variables that we are really interested in
+- We code the data, i.e. give it an extra variable (NPSAMPLE), so that we know whether or not they came from a non-prob (1) or prob sample (0)
+- Then we can fit a logistic regression models: We use this to predict the NPSAMPLE with common variables weighting non-prob cases by 1 and prob cases by their survey weights. I.e. we're trying predict the probability of having a one on the NPSAMPLE variable that we just formed, or in other words, the probability of being in the non-probability sample with those common variables, like bmi, age, and blood pressure, and race ethnicity
+- So the idea is that we can predict the probability of an individual of being in a non-prob sample within whatever population is represented by the prob sample
+- Then we can invert the predicted probabilities for the non-prob sample, treat them as survey weight in standard weighted survey analysis
+
+$survey.weight = \frac {1} {predicted.probability}$
+
+- The issue in this approach is the issue of estimating sampling variance and some kind of replication method is recommended (i.e. computing weighted estimates in bootstrap samples or jackknife samples of the original units)
+
+
+### Population modelling
+
+- In this approach the idea is to use predictive modeling to predict aggregate sample quantities (usually totals) on key variables of interest for population units that are not included in the non-prob sample
+-  Given the predictions of the variables of interests for everybody else who was not included in the non-probability sample, we compute our estimates of interests using estimated totals on the variables of interest based on those predictions
+- i.e.  for computing a weighted mean, we would calculate the overall total of a variable of interest for everyone in the population using the observed values in a non-probability sample, and the predicted values for everybody else who was not included in the non-probability sample. Then, we would divide that predicted total by the estimated population size, and that gives us an estimate of our overall population mean
+
+$weighted.mean = \frac {predicted.total.estimate} {estimated.population.size}$
+
+- The key difference to quasi-randomization is that we don't need a probability sample with the same measures
+- This approach relies on having good regression models to predict the key variables using other auxiliary information available at aggregate level (i.e. totals for an overall population)
+- Standard errors can be based on fitted regression models or using similar replication methods
+
+
+
+## Complex samples
+
+A **complex sample** is any probability sample where the design involves anything more than a Simple Random Sampling (SRS).
+
+
+### Features of complex samples: Stratification
+
+-  One important feature of this type of sampling design is called **stratification**. So stratification is defined as the allocation of an overall sample to different strata or mutually exclusive divisions of the larger population. So, for example, in a large national sample from the United States, these could be different regions in the United States. 
+- There are several different potential allocation schemes in this case for stratification. Either way, or either allocation scheme that we use, our aim is to minimize sampling variance for particular variables given fixed costs.
+- Stratification has the very attractive property of eliminating between strata variance in means or totals of interest on the variable of interest from the overall sampling variance
+-  So it's very important to account for this kind of stratification in our analysis. Otherwise, our sampling variance may be artificially large resulting in too conservative inferences and confidence intervals that are too wide.
+
+
+### Features of complex samples: Cluster sampling (i.e. Clustering)
+
+- In cluster sampling, random sampling of larger clusters of population elements occurs, possibly across multiple stages. 
+- For example, the national sample, we might first sample US counties. And then within those US counties, we might sample area segments. And within those area segments, we might sample households.
+- This idea of cluster sampling is used in practice to reduce the cost of data collection. It's very expensive to visit little n randomly sampled units from a large and widespread population. Instead, we draw random samples of clusters according to a probability sampling design. And then we visit those clusters and collect data from that small clustered area. 
+- But Clustering tends to increase the sampling variance of estimates because units coming from the same cluster tend to have similar or correlated values on the variables of interest. We're not measuring unique information when we draw the cluster sampling. So we do it to save costs, but we don't pick up on as much unique information as we could if we weren't drawing a cluster sample.
+-  So much like with stratification, it's important to account for cluster sampling when we analyze the survey data. Otherwise, our inferences might become too narrow, unlike stratification.
+
+
+### Features of complex samples: Weighting
+
+- Remember, complex samples are probability samples but if  there are certain subgroups of the population that are sampled at higher rates, this idea of oversampling from particular population subgroups, we end up with unequal probabilities of selection for different population units. So the probability of being included in the probability sample could be very different for different people
+- If there are in fact unequal probabilities of selection for different people in the overall population, we need to account for these unequal probabilities to make unbiased population inferences.
+- weights and complex samples are defined by the inverse of a given person's probability of selection. And these are the weights, again, that we would ultimately use when analyzing the data
+- I.e. if my probability of selected is 1/100 --> my weight is 100 and I represent myself and 99 others in the population
+- Weights can also be adjusted for different possibilities of responding to a given survey request and different subgroups
+- I.e. if my prob is 1/100 but if I belong to a subgroup were only 50% of this subgroup responded then I can adjust my weight as follows: (1/0.01) * (1/0.5) = 200
+- The drawback of using weights in analysis is that much like cluster sampling, highly variable adjusted survey weights tend to increase the sampling variance of weighted estimates. So there's a lot of variability in our weights, that means there's a lot of uncertainty in terms of who we're actually sampling and who they represent
+
+
+### Summary
+
+- Stratification reduces sampling variance. It gives us more precise estimates, because we're removing that between strata variability from the overall sampling variability
+- Cluster sampling and weighting, on the other hand, they tend to increase sampling variants
+- The net multiplicative effect of all of these three complex sample design features on the standard error is what we refer to as a **design effect**. This is the net multiplicative change in the variance of an estimate relative to simple random sampling
+- A failure to identify those features of complex samples when performing data analysis is what's often referred to as **analytic error**.
+- So when you're scouring documentation for survey data, you can think of a couple important keywords that you can look for that would indicate the fact that complex sampling was actually performed. Things like multistage sampling, or weights, or stratification, or cluster sampling, or design effects, these are all words to look for in your documentation to see if this kind of complex sampling was actually performed
+
+
+
 
 

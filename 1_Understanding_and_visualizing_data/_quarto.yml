@@ -23,6 +23,9 @@ book:
     - code/13_Unit_Testing.ipynb
     - code/14_nhanes_multivariate_analyses.ipynb
     - code/15_nhanes_multivariate_practice.ipynb
+    - code/16_Sampling_from_a_Biased_Population.ipynb
+    - code/17_Randomness_and_Reproducibility.ipynb
+    - code/18_Empirical_Distribution.ipynb
 
 format:
   html:
