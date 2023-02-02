@@ -1,6 +1,9 @@
+.*
+
 .ipynb_checkpoints
 .quarto
 .quarto/
 .DS_Store
 *.Rhistory
 
+!/.gitignore
